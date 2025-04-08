@@ -1,1 +1,290 @@
-Test
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Szymon Grzeszczak Filmowca.top</title>
+  <style>
+    /* Podstawowe ustawienia strony – czcionka typu maszyna do pisania dla całej strony */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      color: white;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    /* Nagłówek w lewym górnym rogu */
+    .header {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      text-align: left;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 36px;
+    }
+    .header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+    /* Menu – przy lewej krawędzi, wyśrodkowane pionowo */
+    .menu {
+      position: fixed;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .menu a {
+      display: block;
+      margin-bottom: 10px;
+      padding: 4px 0;
+      color: white;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .menu a:hover {
+      text-decoration: underline;
+    }
+    /* Kontener galerii – prawa część ekranu */
+    .gallery {
+      position: absolute;
+      top: 70px;
+      right: 10px;
+      bottom: 10px;
+      left: 150px; /* uwzględnia miejsce dla menu */
+      padding: 20px;
+      overflow: hidden;
+    }
+    /* Kontener widoku zdjęcia – zdjęcie pojawia się od razu w prawym górnym rogu */
+    .image-viewer {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    .image-viewer img {
+      position: absolute;
+      top: 0;
+      right: 0;
+      /* zdjęcie dopasowane do dostępnego obszaru minus pasek meta */
+      max-width: 100%;
+      max-height: calc(100% - 50px);
+      /* Obramówka tylko po lewej i dolnej krawędzi – minimalnie grubsza */
+      border-left: 3px solid white;
+      border-bottom: 3px solid white;
+      cursor: pointer;
+    }
+    /* Pasek meta danych – rozplanowany obok siebie na komputerze, pionowo na telefonie */
+    .meta-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 10px;
+      font-size: 14px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+    .meta-bar div {
+      margin: 2px 5px;
+    }
+    @media screen and (max-width: 768px) {
+      .meta-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+    /* Overlay – sekcje wywoływane z menu, bez ramki; ta zawartość będzie animowana */
+    #content-overlay {
+      display: none;
+      position: fixed;
+      top:50%;
+      left:50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.95);
+      padding: 30px;
+      max-width: 80%;
+      max-height: 80%;
+      overflow-y: auto;
+    }
+    .content-section {
+      display: none;
+    }
+    /* W sekcji "O mnie" dodajemy miejsce na zdjęcie – obrazek ustawiony po prawej stronie */
+    #o-mnie img {
+      float: right;
+      max-width: 40%;
+      margin-left: 20px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Nagłówek -->
+  <div class="header">
+    <h1>Szymon Grzeszczak</h1>
+    <h2>Filmowca.top</h2>
+  </div>
+  
+  <!-- Menu -->
+  <div class="menu">
+    <a href="#" data-section="o-mnie">O mnie</a>
+    <a href="#" data-section="kontakt">Kontakt</a>
+    <a href="#" data-section="galeria">Galeria</a>
+  </div>
+  
+  <!-- Galeria zdjęć -->
+  <div class="gallery">
+    <div class="image-viewer">
+      <!-- Zdjęcie pojawia się w prawej górnej części -->
+      <img id="current-image" src="" alt="Zdjęcie" />
+      <!-- Pasek meta danych -->
+      <div class="meta-bar" id="meta-bar">
+        <div id="opis">Opis: Przykładowe zdjęcie</div>
+        <div id="model">Model:</div>
+        <div id="wsparcie">Wsparcie:</div>
+        <div id="aparat">Aparat:</div>
+        <div id="miejsce">Miejsce:</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Overlay – sekcje z informacjami wywoływane z menu -->
+  <div id="content-overlay">
+    <!-- Sekcja O mnie – zawiera miejsce na obrazek -->
+    <div id="o-mnie" class="content-section">
+      <img src="https://via.placeholder.com/300x200" alt="Mój portret">
+      <h3>O mnie</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ut arcu felis. Suspendisse potenti. Curabitur laoreet orci ut interdum pulvinar.</p>
+    </div>
+    <div id="kontakt" class="content-section">
+      <h3>Kontakt</h3>
+      <p>Email: przyklad@example.com<br>Telefon: 123-456-789</p>
+    </div>
+    <div id="galeria" class="content-section">
+      <h3>Galeria</h3>
+      <p>Przykładowe informacje o galerii: Tutaj można zobaczyć niesamowite zdjęcia ukazujące najróżniejsze emocje.</p>
+    </div>
+  </div>
+  
+  <script>
+    // Funkcja do animacji miksu liter
+    function scrambleText(element, finalText, duration) {
+      const chars = '!<>-_\\/[]{}—=+*^?#________';
+      let iterations = finalText.length;
+      const intervalTime = duration / iterations;
+      let currentIteration = 0;
+      const scrambleInterval = setInterval(() => {
+        element.textContent = finalText.split('').map((letter, index) => {
+          return index < currentIteration ? finalText[index] : chars[Math.floor(Math.random() * chars.length)];
+        }).join('');
+        currentIteration++;
+        if (currentIteration > finalText.length) {
+          clearInterval(scrambleInterval);
+          element.textContent = finalText;
+        }
+      }, intervalTime);
+    }
+    
+    // Funkcja animująca wszystkie elementy tekstowe w danej sekcji (nagłówki i paragrafy)
+    function animateOverlay(section) {
+      const texts = section.querySelectorAll('h3, p');
+      texts.forEach(el => {
+        // Zachowaj oryginalny tekst
+        const finalText = el.textContent;
+        // Ustaw tekst na pusty, a następnie animuj
+        el.textContent = '';
+        scrambleText(el, finalText, 500);
+      });
+    }
+    
+    // Dane zdjęć wraz z metadanymi
+    const photos = [
+      {
+        src: "https://via.placeholder.com/1200x800", 
+        opis: "Pierwsze zdjęcie",
+        model: "Model A", 
+        wsparcie: "Wsparcie A", 
+        aparat: "Aparat A", 
+        miejsce: "Miejsce A"
+      },
+      {
+        src: "https://via.placeholder.com/1200x800/ff0000", 
+        opis: "Drugie zdjęcie",
+        model: "Model B", 
+        wsparcie: "Wsparcie B", 
+        aparat: "Aparat B", 
+        miejsce: "Miejsce B"
+      },
+      {
+        src: "https://via.placeholder.com/1200x800/00ff00", 
+        opis: "Trzecie zdjęcie",
+        model: "Model C", 
+        wsparcie: "Wsparcie C", 
+        aparat: "Aparat C", 
+        miejsce: "Miejsce C"
+      }
+    ];
+    
+    let currentIndex = 0;
+    const currentImage = document.getElementById("current-image");
+    const opisEl = document.getElementById("opis");
+    const modelEl = document.getElementById("model");
+    const wsparcieEl = document.getElementById("wsparcie");
+    const aparatEl = document.getElementById("aparat");
+    const miejsceEl = document.getElementById("miejsce");
+    
+    function showPhoto(index) {
+      const photo = photos[index];
+      currentImage.src = photo.src;
+      currentImage.alt = photo.opis;
+      opisEl.textContent = "Opis: " + photo.opis;
+      modelEl.textContent = "Model: " + photo.model;
+      wsparcieEl.textContent = "Wsparcie: " + photo.wsparcie;
+      aparatEl.textContent = "Aparat: " + photo.aparat;
+      miejsceEl.textContent = "Miejsce: " + photo.miejsce;
+    }
+    
+    // Wyświetlenie początkowego zdjęcia
+    showPhoto(currentIndex);
+    
+    // Kliknięcie na zdjęcie powoduje przejście do kolejnego
+    currentImage.addEventListener("click", function() {
+      currentIndex = (currentIndex + 1) % photos.length;
+      showPhoto(currentIndex);
+    });
+    
+    // Obsługa menu – wyświetlanie overlay
+    const menuLinks = document.querySelectorAll('.menu a');
+    const overlay = document.getElementById('content-overlay');
+    const contentSections = document.querySelectorAll('.content-section');
+    
+    menuLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        // Ukryj wszystkie sekcje overlay
+        contentSections.forEach(sec => sec.style.display = 'none');
+        // Odczyt id sekcji z atrybutu data-section
+        const sectionId = this.getAttribute('data-section');
+        const selectedSection = document.getElementById(sectionId);
+        if (selectedSection) {
+          selectedSection.style.display = 'block';
+          overlay.style.display = 'block';
+          // Animacja miksu liter dla danej sekcji
+          animateOverlay(selectedSection);
+        }
+      });
+    });
+    
+    // Kliknięcie poza zawartością overlay – zamknięcie
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) {
+        overlay.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
