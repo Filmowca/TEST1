@@ -14,7 +14,7 @@
       font-family: 'Courier New', Courier, monospace;
       overflow: hidden;
     }
-    /* Ustawienie linków – wszystkie mają kolor biały */
+    /* Ustawienie linków – wszystkie mają biały kolor */
     a {
       color: white;
       text-decoration: none;
@@ -42,12 +42,12 @@
       position: fixed;
       left: 10px;
       top: 50%;
-      transform: translateY(-50%);
+      transform: translateY(-50%); /* wyśrodkowanie pionowe */
       z-index: 2;
       text-align: left;
     }
     .menu a {
-      display: block;
+      display: block; /* każdy link w osobnym wierszu */
       margin: 10px 0;
       font-size: 16px;
     }
@@ -65,18 +65,16 @@
       overflow: hidden;
       transition: opacity 0.5s ease-out;
     }
-    /* Kontener mediów – zawartość wyrównana do prawego górnego rogu */
+    /* Kontener mediów – flexbox, zawartość zaczyna się od prawego górnego rogu */
     #media-container {
       position: relative;
       width: 100%;
       height: 100%;
       display: flex;
-      justify-content: flex-end;
-      align-items: flex-start;
+      justify-content: flex-end; /* wyrównanie do prawej */
+      align-items: flex-start;   /* wyrównanie do góry */
     }
-    /* Główne zdjęcia/filmy – ustalenie maksymalnych wymiarów,
-       obrazy nie przekroczą 1920x1080 (dla formatu poziomego) 
-       i zostaną odpowiednio zmniejszone przy object-fit: contain */
+    /* Główne zdjęcia/filmy – określenie maksymalnych wymiarów, object-fit: contain umożliwia zachowanie proporcji */
     #media-container img,
     #media-container video {
       position: relative;
@@ -86,30 +84,17 @@
       max-height: 1080px;
       object-fit: contain;
       box-shadow: none;
+      margin: 0; /* usunięto dodatkowe marginesy */
     }
-    /* Wrapper dla obrazu, aby dodać element w lewym dolnym rogu */
+    /* Wrapper dla obrazu – nie dodajemy już kwadracika w lewym dolnym rogu */
     .img-wrapper {
       position: relative;
       display: inline-block;
+      margin: 0; /* brak dodatkowych przesunięć */
     }
-    /* Lewy dolny róg – kwadracik 30x30px z cienką białą ramką oraz koordynatami */
-    .img-corner {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 30px;
-      height: 30px;
-      border: 2px solid white;
-      box-sizing: border-box;
-      font-size: 10px;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      white-space: pre-line;
-      padding: 2px;
-    }
-    /* Opisy po lewej stronie obrazu – część górna */
+    /* Usunięto .img-corner, ponieważ nie chcemy kwadratu w lewym dolnym rogu */
+    
+    /* Opisy po lewej stronie obrazu – część górna, ustawione jako tekst pionowy */
     .meta-bar {
       position: absolute;
       top: 0;
@@ -118,8 +103,11 @@
       display: flex;
       flex-direction: column;
       font-size: 14px;
+      /* Ustawienie tekstu pionowo */
+      writing-mode: vertical-rl;
+      text-orientation: upright;
     }
-    /* Opisy po lewej stronie obrazu – część dolna */
+    /* Opisy po lewej stronie obrazu – część dolna, tekst pisany normalnie */
     .meta-bar-bottom {
       position: absolute;
       left: -200px;
@@ -128,12 +116,13 @@
       font-size: 14px;
       display: flex;
       flex-direction: column;
+      /* Tekst normalnie */
     }
     .meta-bar div,
     .meta-bar-bottom div {
       margin-bottom: 5px;
     }
-    /* Sekcje "O mnie" i "Kontakt" – bez tła (transparentne) */
+    /* Sekcje "O mnie" i "Kontakt" – bez tła, przezroczyste */
     #content-overlay {
       display: none;
       position: fixed;
@@ -166,13 +155,13 @@
       cursor: pointer;
       z-index: 5;
     }
-    /* Zdjęcie w sekcji "O mnie": ustawione na 300x300px */
+    /* Zdjęcie w sekcji "O mnie" – ustalone w wymiarach 300x300px */
     #o-mnie img {
       width: 300px;
       height: 300px;
       object-fit: cover;
     }
-    /* Ustawienia mobilne – np. rozmiar nagłówka */
+    /* Ustawienia mobilne */
     @media screen and (max-width: 768px) {
       .header {
         max-width: 40%;
@@ -193,7 +182,7 @@
     <h2>Filmowca.top</h2>
   </div>
   
-  <!-- Menu – ustawione pionowo na lewej krawędzi, wyśrodkowane w pionie -->
+  <!-- Menu – linki ustawione pionowo na lewej krawędzi, wyśrodkowane w pionie -->
   <div class="menu" id="menu">
     <a href="#" data-section="o-mnie">O mnie</a>
     <a href="#" data-section="kontakt">Kontakt</a>
@@ -203,23 +192,23 @@
   <!-- Galeria – kontener mediów oraz opisy (meta) -->
   <div class="gallery" id="gallery">
     <div id="media-container"></div>
-    <!-- Opisy po lewej stronie obrazu (górne) -->
+    <!-- Opisy po lewej stronie obrazu (górna część): tekst pionowy -->
     <div class="meta-bar" id="meta-bar">
       <div id="opis">Opis: Przykładowe zdjęcie</div>
       <div id="model">Model:</div>
       <div id="wsparcie">Wsparcie:</div>
     </div>
-    <!-- Opisy po lewej stronie obrazu (dolne) -->
+    <!-- Opisy po lewej stronie obrazu (dolna część): tekst normalny -->
     <div class="meta-bar-bottom" id="meta-bar-bottom">
       <div id="aparat">Aparat:</div>
       <div id="miejsce">Miejsce:</div>
     </div>
   </div>
   
-  <!-- Sekcje "O mnie" i "Kontakt" – bez tła -->
+  <!-- Sekcje "O mnie" i "Kontakt" – przezroczyste -->
   <div id="content-overlay">
     <div id="o-mnie" class="content-section">
-      <!-- Przycisk zamykania (X) -->
+      <!-- Przycisk zamykania (pojedynczy X) -->
       <div class="close-x" onclick="closeOverlay()">X</div>
       <img src="DSC_8983.JPG" alt="Mój portret">
       <h3>O mnie</h3>
@@ -242,7 +231,7 @@
   </div>
   
   <script>
-    // Funkcja scrambleText – efekt animowanego pojawiania się tekstu
+    // Funkcja scrambleText – tworzy efekt animowanego pojawiania się tekstu
     function scrambleText(element, finalText, duration) {
       const chars = '!<>-_\\/[]{}—=+*^?#________';
       const totalIterations = finalText.length;
@@ -293,7 +282,7 @@
       mediaContainer.innerHTML = '';  // czyścimy poprzedni obraz/film
       
       if (item.type === 'image') {
-        // Tworzymy wrapper do obrazu, aby dodać element z koordynatami
+        // Tworzymy wrapper do obrazu – bez dodawanego kwadratu w lewym dolnym rogu
         const wrapper = document.createElement('div');
         wrapper.className = 'img-wrapper';
         
@@ -302,20 +291,6 @@
         img.alt = item.opis;
         wrapper.appendChild(img);
         
-        // Element z koordynatami (w lewym dolnym rogu)
-        const corner = document.createElement('div');
-        corner.className = 'img-corner';
-        corner.textContent = '...';
-        
-        // Po załadowaniu obrazu pobieramy współrzędne lewego dolnego rogu
-        img.addEventListener('load', function() {
-          const rect = img.getBoundingClientRect();
-          const left = Math.round(rect.left);
-          const top = Math.round(rect.top);
-          corner.textContent = `L:${left}px\nT:${top}px`;
-        });
-        
-        wrapper.appendChild(corner);
         mediaContainer.appendChild(wrapper);
       } else if (item.type === 'video') {
         const video = document.createElement('video');
@@ -327,7 +302,7 @@
         mediaContainer.appendChild(video);
       }
       
-      // Aktualizacja opisów z efektem animacji
+      // Aktualizacja opisów – efekt animacji
       scrambleText(opisEl, "Opis: " + item.opis, 500);
       scrambleText(modelEl, "Model: " + item.model, 500);
       scrambleText(wsparcieEl, "Wsparcie: " + item.wsparcie, 500);
@@ -340,10 +315,18 @@
     
     showMedia(currentIndex);
     
-    // Kliknięcie na kontener mediów – zmiana obrazu/filmu
+    // Kliknięcie na kontener mediów: jeśli sekcja jest otwarta, najpierw ją zamykamy, a po opóźnieniu przełączamy obraz
     mediaContainer.addEventListener('click', function() {
-      currentIndex = (currentIndex + 1) % media.length;
-      showMedia(currentIndex);
+      if (document.getElementById('content-overlay').style.display === "block") {
+        closeOverlay();
+        setTimeout(() => {
+          currentIndex = (currentIndex + 1) % media.length;
+          showMedia(currentIndex);
+        }, 500);
+      } else {
+        currentIndex = (currentIndex + 1) % media.length;
+        showMedia(currentIndex);
+      }
     });
     
     // Obsługa menu – wyświetlanie sekcji lub przekierowanie dla galerii
@@ -366,7 +349,8 @@
             window.location.href = "https://www.instagram.com/";
           }, 500);
         } else {
-          gallery.style.opacity = "0";  // Ukrywamy galerię, gdy otwieramy sekcję
+          // Najpierw ukrywamy galerię (zdjęcia)
+          gallery.style.opacity = "0";
           contentSections.forEach(sec => sec.style.display = 'none');
           const selectedSection = document.getElementById(sectionId);
           if (selectedSection) {
@@ -378,7 +362,7 @@
       });
     });
     
-    // Funkcja animująca tekst w wyświetlanych sekcjach
+    // Funkcja animująca tekst w otwieranych sekcjach
     function animateOverlay(section) {
       const texts = section.querySelectorAll('h3, p');
       texts.forEach(el => {
