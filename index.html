@@ -14,7 +14,7 @@
       font-family: 'Courier New', Courier, monospace;
       overflow: hidden;
     }
-    /* Ustawienie linków – wszystkie linki mają kolor biały, by nie dziedziczyły domyślnego niebieskiego */
+    /* Ustawienie linków – wszystkie mają kolor biały */
     a {
       color: white;
       text-decoration: none;
@@ -37,17 +37,17 @@
       font-size: 18px;
       font-family: 'Helvetica Neue', sans-serif;
     }
-    /* Menu – ustawione na lewej krawędzi i wyśrodkowane pionowo */
+    /* Menu – ustawione na lewej krawędzi, wyśrodkowane pionowo */
     .menu {
       position: fixed;
       left: 10px;
-      top: 50%;                 /* Połowa wysokości strony */
-      transform: translateY(-50%);  /* Wyśrodkowanie */
+      top: 50%;
+      transform: translateY(-50%);
       z-index: 2;
       text-align: left;
     }
     .menu a {
-      display: block;           /* Każdy link w osobnym wierszu */
+      display: block;
       margin: 10px 0;
       font-size: 16px;
     }
@@ -63,33 +63,36 @@
       left: 60px;
       padding: 20px;
       overflow: hidden;
-      transition: opacity 0.5s ease-out; /* animacja zanikania galerii */
+      transition: opacity 0.5s ease-out;
     }
-    /* Kontener mediów – ustawiony jako flexbox, aby zawartość zaczynała od prawego górnego rogu */
+    /* Kontener mediów – zawartość wyrównana do prawego górnego rogu */
     #media-container {
       position: relative;
       width: 100%;
       height: 100%;
       display: flex;
-      justify-content: flex-end;  /* wyrównanie do prawej */
-      align-items: flex-start;    /* wyrównanie do góry */
+      justify-content: flex-end;
+      align-items: flex-start;
     }
-    /* Ustawienia obrazów/filmów – naturalny rozmiar, brak ograniczeń */
+    /* Główne zdjęcia/filmy – ustalenie maksymalnych wymiarów,
+       obrazy nie przekroczą 1920x1080 (dla formatu poziomego) 
+       i zostaną odpowiednio zmniejszone przy object-fit: contain */
     #media-container img,
     #media-container video {
       position: relative;
       width: auto;
       height: auto;
-      max-width: none;
-      max-height: none;
+      max-width: 1920px;
+      max-height: 1080px;
+      object-fit: contain;
       box-shadow: none;
     }
-    /* Wrapper dla obrazu, żeby dodać element w lewym dolnym rogu */
+    /* Wrapper dla obrazu, aby dodać element w lewym dolnym rogu */
     .img-wrapper {
       position: relative;
       display: inline-block;
     }
-    /* Lewy dolny róg – kwadracik 30x30px z cienką białą ramką oraz wyświetlonymi koordynatami */
+    /* Lewy dolny róg – kwadracik 30x30px z cienką białą ramką oraz koordynatami */
     .img-corner {
       position: absolute;
       left: 0;
@@ -103,7 +106,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      white-space: pre-line; /* pozwala na wieloliniowy tekst */
+      white-space: pre-line;
       padding: 2px;
     }
     /* Opisy po lewej stronie obrazu – część górna */
@@ -130,7 +133,7 @@
     .meta-bar-bottom div {
       margin-bottom: 5px;
     }
-    /* Sekcje "O mnie" i "Kontakt" – bez tła (przezroczyste) */
+    /* Sekcje "O mnie" i "Kontakt" – bez tła (transparentne) */
     #content-overlay {
       display: none;
       position: fixed;
@@ -147,7 +150,7 @@
       left: 50%;
       transform: translate(-50%, -50%);
       pointer-events: auto;
-      background: transparent;  /* brak tła */
+      background: transparent;
       padding: 20px;
       color: white;
       max-width: 80%;
@@ -162,6 +165,12 @@
       font-size: 24px;
       cursor: pointer;
       z-index: 5;
+    }
+    /* Zdjęcie w sekcji "O mnie": ustawione na 300x300px */
+    #o-mnie img {
+      width: 300px;
+      height: 300px;
+      object-fit: cover;
     }
     /* Ustawienia mobilne – np. rozmiar nagłówka */
     @media screen and (max-width: 768px) {
@@ -184,23 +193,23 @@
     <h2>Filmowca.top</h2>
   </div>
   
-  <!-- Menu – wyśrodkowane pionowo na lewej krawędzi; linki wyświetlane jeden pod drugim -->
+  <!-- Menu – ustawione pionowo na lewej krawędzi, wyśrodkowane w pionie -->
   <div class="menu" id="menu">
     <a href="#" data-section="o-mnie">O mnie</a>
     <a href="#" data-section="kontakt">Kontakt</a>
     <a href="#" data-section="galeria">Galeria</a>
   </div>
   
-  <!-- Galeria – kontener mediów wraz z opisami (meta) -->
+  <!-- Galeria – kontener mediów oraz opisy (meta) -->
   <div class="gallery" id="gallery">
     <div id="media-container"></div>
-    <!-- Opisy z lewej strony obrazu (górne) -->
+    <!-- Opisy po lewej stronie obrazu (górne) -->
     <div class="meta-bar" id="meta-bar">
       <div id="opis">Opis: Przykładowe zdjęcie</div>
       <div id="model">Model:</div>
       <div id="wsparcie">Wsparcie:</div>
     </div>
-    <!-- Opisy z lewej strony obrazu (dolne) -->
+    <!-- Opisy po lewej stronie obrazu (dolne) -->
     <div class="meta-bar-bottom" id="meta-bar-bottom">
       <div id="aparat">Aparat:</div>
       <div id="miejsce">Miejsce:</div>
@@ -210,7 +219,7 @@
   <!-- Sekcje "O mnie" i "Kontakt" – bez tła -->
   <div id="content-overlay">
     <div id="o-mnie" class="content-section">
-      <!-- Przycisk zamykania (pojedynczy X) -->
+      <!-- Przycisk zamykania (X) -->
       <div class="close-x" onclick="closeOverlay()">X</div>
       <img src="DSC_8983.JPG" alt="Mój portret">
       <h3>O mnie</h3>
@@ -223,7 +232,6 @@
         Email: <a href="mailto:przyklad@example.com">przyklad@example.com</a>
       </p>
       <p>Social media:</p>
-      <!-- Lista linków – każdy link można później zmodyfikować (zastąp LINK_XXX właściwym adresem) -->
       <ul style="list-style: none; padding: 0;">
         <li><a href="LINK_INSTAGRAM" target="_blank"><!-- Zmień LINK_INSTAGRAM -->Instagram</a></li>
         <li><a href="LINK_TIKTOK" target="_blank"><!-- Zmień LINK_TIKTOK -->TikTok</a></li>
@@ -259,16 +267,6 @@
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
       }
-    }
-    
-    // Animacja sekcji (tylko wewnętrznych tekstów), wywoływana przy otwarciu danej sekcji
-    function animateOverlay(section) {
-      const texts = section.querySelectorAll('h3, p');
-      texts.forEach(el => {
-        const finalText = el.textContent;
-        el.textContent = '';
-        scrambleText(el, finalText, 500);
-      });
     }
     
     // Przykładowe dane mediów
@@ -307,7 +305,7 @@
         // Element z koordynatami (w lewym dolnym rogu)
         const corner = document.createElement('div');
         corner.className = 'img-corner';
-        corner.textContent = '...';  // Tymczasowy tekst
+        corner.textContent = '...';
         
         // Po załadowaniu obrazu pobieramy współrzędne lewego dolnego rogu
         img.addEventListener('load', function() {
@@ -361,7 +359,6 @@
         e.preventDefault();
         const sectionId = this.getAttribute('data-section');
         if (sectionId === "galeria") {
-          // Dla galerii – przekierowanie
           header.style.opacity = "0";
           menu.style.opacity = "0";
           gallery.style.opacity = "0";
@@ -369,8 +366,7 @@
             window.location.href = "https://www.instagram.com/";
           }, 500);
         } else {
-          // Przy otwieraniu sekcji (O mnie lub Kontakt) ukrywamy galerię (zdjęcia)
-          gallery.style.opacity = "0";
+          gallery.style.opacity = "0";  // Ukrywamy galerię, gdy otwieramy sekcję
           contentSections.forEach(sec => sec.style.display = 'none');
           const selectedSection = document.getElementById(sectionId);
           if (selectedSection) {
@@ -382,7 +378,17 @@
       });
     });
     
-    // Funkcja zamykająca wyświetlaną sekcję – przywracamy galerię
+    // Funkcja animująca tekst w wyświetlanych sekcjach
+    function animateOverlay(section) {
+      const texts = section.querySelectorAll('h3, p');
+      texts.forEach(el => {
+        const finalText = el.textContent;
+        el.textContent = '';
+        scrambleText(el, finalText, 500);
+      });
+    }
+    
+    // Funkcja zamykająca wyświetlaną sekcję – przywracamy widoczność galerii
     function closeOverlay() {
       overlay.style.display = 'none';
       contentSections.forEach(sec => sec.style.display = 'none');
