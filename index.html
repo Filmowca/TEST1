@@ -76,15 +76,14 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background-color: rgba(0,0,0,0.8);
+      background-color: rgba(51, 51, 51, 0.8);
       padding: 10px;
       font-size: 14px;
       display: flex;
-      flex-direction: row;
-      justify-content: space-around;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: flex-start;
     }
-    .meta-bar div { margin: 2px 5px; }
+    .meta-bar div { margin: 2px 0; }
     .hidden { display: none; }
     .expand-button {
       background: none;
@@ -94,9 +93,10 @@
       font-family: 'Courier New', Courier, monospace;
       padding: 0;
       cursor: pointer;
+      margin-top: 5px;
     }
     @media screen and (max-width: 768px) {
-      .meta-bar { flex-direction: column; align-items: flex-start; }
+      .meta-bar { align-items: flex-start; }
     }
     #content-overlay {
       display: none;
@@ -155,11 +155,12 @@
   <div class="gallery" id="gallery">
     <div id="media-container"></div>
     <div class="meta-bar" id="meta-bar">
-      <div id="model">Model: <button class="expand-button" id="expand-button">Rozwiń</button></div>
+      <div id="model">Model:</div>
       <div id="opis" class="hidden">Opis: Przykładowe zdjęcie</div>
       <div id="wsparcie" class="hidden">Wsparcie:</div>
       <div id="aparat" class="hidden">Aparat:</div>
       <div id="miejsce" class="hidden">Miejsce:</div>
+      <button class="expand-button" id="expand-button">Rozwiń</button>
     </div>
   </div>
   <div id="content-overlay">
@@ -246,8 +247,8 @@
         mediaContainer.appendChild(video);
       }
 
-      scrambleText(opisEl, "Opis: " + item.opis, 500);
       scrambleText(modelEl, "Model: " + item.model, 500);
+      scrambleText(opisEl, "Opis: " + item.opis, 500);
       scrambleText(wsparcieEl, "Wsparcie: " + item.wsparcie, 500);
       scrambleText(aparatEl, "Aparat: " + item.aparat, 500);
       scrambleText(miejsceEl, "Miejsce: " + item.miejsce, 500);
