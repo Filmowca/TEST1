@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
@@ -10,7 +10,7 @@
       padding: 0;
       background-color: black;
       color: white;
-      font-family: 'Courier New', Courier, monospace;
+      font-family: Arial, Helvetica, sans-serif;
       overflow: hidden;
     }
     .header {
@@ -54,7 +54,7 @@
     #media-container {
       position: relative;
       width: 100%;
-      height: calc(100% - 50px);
+      height: calc(100% - 70px);
       cursor: pointer;
     }
     #media-container img, #media-container video {
@@ -81,6 +81,15 @@
       flex-wrap: wrap;
     }
     .meta-bar div { margin: 2px 5px; }
+    .hidden { display: none; }
+    .expand-button {
+      background-color: #f0f0f0;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      color: black;
+      margin-top: 5px;
+    }
     @media screen and (max-width: 768px) {
       .meta-bar { flex-direction: column; align-items: flex-start; }
     }
@@ -107,22 +116,15 @@
       max-height: 80%;
       overflow: auto;
     }
-    #close-button {
-      display: none;
-      position: fixed;
+    .close-button {
+      position: absolute;
       top: 10px;
       right: 10px;
-      width: 60px;
-      height: 60px;
-      background-color: white;
-      z-index: 4;
+      background: none;
+      border: none;
+      font-size: 20px;
       cursor: pointer;
-      animation: float 2s infinite;
-    }
-    @keyframes float {
-      0% { transform: translate(0, 0); }
-      50% { transform: translate(-30px, 30px); }
-      100% { transform: translate(0, 0); }
+      color: white;
     }
     #o-mnie img {
       float: right;
@@ -145,25 +147,27 @@
   <div class="gallery" id="gallery">
     <div id="media-container"></div>
     <div class="meta-bar" id="meta-bar">
-      <div id="opis">Opis: Przykładowe zdjęcie</div>
+      <div id="opis" class="hidden">Opis: Przykładowe zdjęcie</div>
       <div id="model">Model:</div>
-      <div id="wsparcie">Wsparcie:</div>
-      <div id="aparat">Aparat:</div>
-      <div id="miejsce">Miejsce:</div>
+      <div id="wsparcie" class="hidden">Wsparcie:</div>
+      <div id="aparat" class="hidden">Aparat:</div>
+      <div id="miejsce" class="hidden">Miejsce:</div>
+      <button class="expand-button" id="expand-button">Rozwiń</button>
     </div>
   </div>
   <div id="content-overlay">
     <div id="o-mnie" class="content-section">
+      <button class="close-button">X</button>
       <img src="DSC_8983.JPG" alt="Mój portret">
       <h3>O mnie</h3>
       <p>Nazywam się Szymon Grzeszczak moja pasja do fotografi BLA BLA BLA pełne portfolio w sekcji Galeria.</p>
     </div>
     <div id="kontakt" class="content-section">
+      <button class="close-button">X</button>
       <h3>Kontakt</h3>
       <p>Email: przyklad@example.com<br> Instagram TikTok Youtube Facebook</p>
     </div>
   </div>
-  <div id="close-button"></div>
 
   <script>
     function scrambleText(element, finalText, duration) {
@@ -206,6 +210,7 @@
     const wsparcieEl = document.getElementById('wsparcie');
     const aparatEl = document.getElementById('aparat');
     const miejsceEl = document.getElementById('miejsce');
+    const expandButton = document.getElementById('expand-button');
 
     function showMedia(index) {
       const item = media[index];
@@ -230,7 +235,14 @@
       scrambleText(modelEl, "Model: " + item.model, 500);
       scrambleText(wsparcieEl, "Wsparcie: " + item.wsparcie, 500);
       scrambleText(aparatEl, "Aparat: " + item.aparat, 500);
-      scrambleText(miejsceEl, "Miejsce: " + item.miejsce, 500);
+      scrambleText(miejsceEl, "M HUMAN: iejsce: " + item.miejsce, 500);
+
+      // Resetowanie widoczności metadanych
+      opisEl.classList.add('hidden');
+      wsparcieEl.classList.add('hidden');
+      aparatEl.classList.add('hidden');
+      miejsceEl.classList.add('hidden');
+      expandButton.textContent = "Rozwiń";
     }
 
     showMedia(currentIndex);
@@ -240,12 +252,23 @@
       showMedia(currentIndex);
     });
 
+    expandButton.addEventListener('click', function() {
+      const hiddenElements = [opisEl, wsparcieEl, aparatEl, miejsceEl];
+      if (opisEl.classList.contains('hidden')) {
+        hiddenElements.forEach(el => el.classList.remove('hidden'));
+        expandButton.textContent = "Zwiń";
+      } else {
+        hiddenElements.forEach(el => el.classList.add('hidden'));
+        expandButton.textContent = "Rozwiń";
+      }
+    });
+
     const header = document.getElementById('header');
     const menu = document.getElementById('menu');
     const gallery = document.getElementById('gallery');
     const overlay = document.getElementById('content-overlay');
     const contentSections = document.querySelectorAll('.content-section');
-    const closeButton = document.getElementById('close-button');
+    const closeButtons = document.querySelectorAll('.close-button');
 
     const menuLinks = document.querySelectorAll('.menu a');
     menuLinks.forEach(link => {
@@ -270,9 +293,6 @@
             overlay.style.display = 'block';
             selectedSection.style.display = 'block';
             animateOverlay(selectedSection);
-            setTimeout(() => {
-              closeButton.style.display = 'block';
-            }, 500);
           }
         }
       });
@@ -287,11 +307,12 @@
       });
     }
 
-    closeButton.addEventListener('click', function() {
-      overlay.style.display = 'none';
-      closeButton.style.display = 'none';
-      gallery.classList.remove('slide-out');
-      contentSections.forEach(sec => sec.style.display = 'none');
+    closeButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        overlay.style.display = 'none';
+        contentSections.forEach(sec => sec.style.display = 'none');
+        gallery.classList.remove('slide-out');
+      });
     });
   </script>
 </body>
