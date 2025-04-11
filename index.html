@@ -1,128 +1,89 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Szymon Grzeszczak Filmowca.top</title>
   <style>
-    /* Ustawienia globalne – tło, czcionki, kolor tekstu */
     body {
       margin: 0;
       padding: 0;
-      background-color: #1a1a1a; /* ciemnoszare tło */
+      background-color: black;
       color: white;
       font-family: 'Courier New', Courier, monospace;
       overflow: hidden;
     }
-    /* Ustawienie linków – wszystkie mają biały kolor */
-    a {
-      color: white;
-      text-decoration: none;
-    }
-    /* Nagłówek – nowoczesna czcionka */
     .header {
       position: fixed;
       top: 10px;
       left: 10px;
       text-align: left;
       z-index: 2;
+      transition: transform 0.5s ease-out, opacity 0.5s ease-out;
     }
-    .header h1 {
-      margin: 0;
-      font-size: 36px;
-      font-family: 'Helvetica Neue', sans-serif;
-    }
-    .header h2 {
-      margin: 0;
-      font-size: 18px;
-      font-family: 'Helvetica Neue', sans-serif;
-    }
-    /* Menu – ustawione na lewej krawędzi, wyśrodkowane pionowo */
+    .header h1 { margin: 0; font-size: 36px; }
+    .header h2 { margin: 0; font-size: 18px; }
     .menu {
       position: fixed;
       left: 10px;
       top: 50%;
-      transform: translateY(-50%); /* wyśrodkowanie pionowe */
+      transform: translateY(-50%);
       z-index: 2;
-      text-align: left;
+      transition: transform 0.5s ease-out, opacity 0.5s ease-out;
     }
     .menu a {
-      display: block; /* każdy link w osobnym wierszu */
-      margin: 10px 0;
-      font-size: 16px;
+      display: block;
+      margin-bottom: 10px;
+      padding: 4px 0;
+      color: white;
+      text-decoration: none;
+      cursor: pointer;
     }
-    .menu a:hover {
-      text-decoration: underline;
-    }
-    /* Galeria – główny kontener mediów */
+    .menu a:hover { text-decoration: underline; }
     .gallery {
       position: absolute;
       top: 70px;
       right: 10px;
       bottom: 10px;
-      left: 60px;
+      left: 150px;
       padding: 20px;
       overflow: hidden;
-      transition: opacity 0.5s ease-out;
+      transition: transform 0.5s ease-out, opacity 0.5s ease-out;
     }
-    /* Kontener mediów – flexbox, zawartość zaczyna się od prawego górnego rogu */
+    .gallery.slide-out { transform: translateX(100%) translateY(-100%); opacity: 0; }
     #media-container {
       position: relative;
       width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: flex-end; /* wyrównanie do prawej */
-      align-items: flex-start;   /* wyrównanie do góry */
+      height: calc(100% - 50px);
+      cursor: pointer;
     }
-    /* Główne zdjęcia/filmy – określenie maksymalnych wymiarów, object-fit: contain umożliwia zachowanie proporcji */
-    #media-container img,
-    #media-container video {
-      position: relative;
-      width: auto;
-      height: auto;
-      max-width: 1920px;
-      max-height: 1080px;
-      object-fit: contain;
-      box-shadow: none;
-      margin: 0; /* usunięto dodatkowe marginesy */
-    }
-    /* Wrapper dla obrazu – nie dodajemy już kwadracika w lewym dolnym rogu */
-    .img-wrapper {
-      position: relative;
-      display: inline-block;
-      margin: 0; /* brak dodatkowych przesunięć */
-    }
-    /* Usunięto .img-corner, ponieważ nie chcemy kwadratu w lewym dolnym rogu */
-    
-    /* Opisy po lewej stronie obrazu – część górna, ustawione jako tekst pionowy */
-    .meta-bar {
+    #media-container img, #media-container video {
       position: absolute;
       top: 0;
-      left: -200px;
-      width: 180px;
-      display: flex;
-      flex-direction: column;
-      font-size: 14px;
-      /* Ustawienie tekstu pionowo */
-      writing-mode: vertical-rl;
-      text-orientation: upright;
+      right: 0;
+      max-width: 100%;
+      max-height: 100%;
+      border-left: 3px solid white;
+      border-bottom: 3px solid white;
     }
-    /* Opisy po lewej stronie obrazu – część dolna, tekst pisany normalnie */
-    .meta-bar-bottom {
+    #media-container video { pointer-events: none; }
+    .meta-bar {
       position: absolute;
-      left: -200px;
       bottom: 0;
-      width: 180px;
+      left: 0;
+      right: 0;
+      background-color: rgba(0,0,0,0.8);
+      padding: 10px;
       font-size: 14px;
       display: flex;
-      flex-direction: column;
-      /* Tekst normalnie */
+      flex-direction: row;
+      justify-content: space-around;
+      flex-wrap: wrap;
     }
-    .meta-bar div,
-    .meta-bar-bottom div {
-      margin-bottom: 5px;
+    .meta-bar div { margin: 2px 5px; }
+    @media screen and (max-width: 768px) {
+      .meta-bar { flex-direction: column; align-items: flex-start; }
     }
-    /* Sekcje "O mnie" i "Kontakt" – bez tła, przezroczyste */
     #content-overlay {
       display: none;
       position: fixed;
@@ -139,99 +100,72 @@
       left: 50%;
       transform: translate(-50%, -50%);
       pointer-events: auto;
-      background: transparent;
+      background-color: rgba(0, 0, 0, 0.8);
       padding: 20px;
       color: white;
       max-width: 80%;
       max-height: 80%;
       overflow: auto;
     }
-    /* Przycisk zamykania sekcji – pojedynczy znak X */
-    .close-x {
-      position: absolute;
+    #close-button {
+      display: none;
+      position: fixed;
       top: 10px;
       right: 10px;
-      font-size: 24px;
+      width: 60px;
+      height: 60px;
+      background-color: white;
+      z-index: 4;
       cursor: pointer;
-      z-index: 5;
+      animation: float 2s infinite;
     }
-    /* Zdjęcie w sekcji "O mnie" – ustalone w wymiarach 300x300px */
+    @keyframes float {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(-30px, 30px); }
+      100% { transform: translate(0, 0); }
+    }
     #o-mnie img {
-      width: 300px;
-      height: 300px;
-      object-fit: cover;
-    }
-    /* Ustawienia mobilne */
-    @media screen and (max-width: 768px) {
-      .header {
-        max-width: 40%;
-      }
-      .header h1 {
-        font-size: 24px;
-      }
-      .gallery {
-        left: 60px;
-      }
+      float: right;
+      max-width: 40%;
+      margin-left: 20px;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
-  <!-- Nagłówek strony -->
   <div class="header" id="header">
     <h1>Szymon Grzeszczak</h1>
     <h2>Filmowca.top</h2>
   </div>
-  
-  <!-- Menu – linki ustawione pionowo na lewej krawędzi, wyśrodkowane w pionie -->
   <div class="menu" id="menu">
     <a href="#" data-section="o-mnie">O mnie</a>
     <a href="#" data-section="kontakt">Kontakt</a>
     <a href="#" data-section="galeria">Galeria</a>
   </div>
-  
-  <!-- Galeria – kontener mediów oraz opisy (meta) -->
   <div class="gallery" id="gallery">
     <div id="media-container"></div>
-    <!-- Opisy po lewej stronie obrazu (górna część): tekst pionowy -->
     <div class="meta-bar" id="meta-bar">
       <div id="opis">Opis: Przykładowe zdjęcie</div>
       <div id="model">Model:</div>
       <div id="wsparcie">Wsparcie:</div>
-    </div>
-    <!-- Opisy po lewej stronie obrazu (dolna część): tekst normalny -->
-    <div class="meta-bar-bottom" id="meta-bar-bottom">
       <div id="aparat">Aparat:</div>
       <div id="miejsce">Miejsce:</div>
     </div>
   </div>
-  
-  <!-- Sekcje "O mnie" i "Kontakt" – przezroczyste -->
   <div id="content-overlay">
     <div id="o-mnie" class="content-section">
-      <!-- Przycisk zamykania (pojedynczy X) -->
-      <div class="close-x" onclick="closeOverlay()">X</div>
       <img src="DSC_8983.JPG" alt="Mój portret">
       <h3>O mnie</h3>
-      <p>Nazywam się Szymon Grzeszczak. Moja pasja do fotografii rozwija się wraz z pełnym portfolio w sekcji Galeria.</p>
+      <p>Nazywam się Szymon Grzeszczak moja pasja do fotografi BLA BLA BLA pełne portfolio w sekcji Galeria.</p>
     </div>
     <div id="kontakt" class="content-section">
-      <div class="close-x" onclick="closeOverlay()">X</div>
       <h3>Kontakt</h3>
-      <p>
-        Email: <a href="mailto:przyklad@example.com">przyklad@example.com</a>
-      </p>
-      <p>Social media:</p>
-      <ul style="list-style: none; padding: 0;">
-        <li><a href="LINK_INSTAGRAM" target="_blank"><!-- Zmień LINK_INSTAGRAM -->Instagram</a></li>
-        <li><a href="LINK_TIKTOK" target="_blank"><!-- Zmień LINK_TIKTOK -->TikTok</a></li>
-        <li><a href="LINK_YOUTUBE" target="_blank"><!-- Zmień LINK_YOUTUBE -->YouTube</a></li>
-        <li><a href="LINK_FACEBOOK" target="_blank"><!-- Zmień LINK_FACEBOOK -->Facebook</a></li>
-      </ul>
+      <p>Email: przyklad@example.com<br> Instagram TikTok Youtube Facebook</p>
     </div>
   </div>
-  
+  <div id="close-button"></div>
+
   <script>
-    // Funkcja scrambleText – tworzy efekt animowanego pojawiania się tekstu
     function scrambleText(element, finalText, duration) {
       const chars = '!<>-_\\/[]{}—=+*^?#________';
       const totalIterations = finalText.length;
@@ -249,25 +183,22 @@
         }
       }, intervalTime);
     }
-    
-    // Funkcja tasująca elementy tablicy
+
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
       }
     }
-    
-    // Przykładowe dane mediów
+
     const media = [
       { type: 'image', src: 'DSC_8911.JPG', opis: 'Pierwsze zdjęcie', model: 'Model A', wsparcie: 'Wsparcie A', aparat: 'Aparat A', miejsce: 'Miejsce A' },
       { type: 'video', src: 'https://www.youtube.com/watch?v=C7OQHIpDlvA', opis: 'Pierwszy film', model: 'Model B', wsparcie: 'Wsparcie B', aparat: 'Aparat B', miejsce: 'Miejsce B' },
-      { type: 'image', src: 'DSC_8932.JPG', opis: 'Drugie zdjęcie', model: 'Model C', wsparcie: 'Wsparcie C', aparat: 'Aparat C', miejsce: 'Miejsce C' }
+      { type: 'image', src: 'DSC_8932.JPG', opis: 'Drugie zdjęcie', model: 'Model C', wsparcie: 'Wsparcie C', aparat: 'Aparat C', miejsce: 'Miejsce C' },
     ];
-    
-    // Tasowanie mediów
+
     shuffle(media);
-    
+
     let currentIndex = 0;
     const mediaContainer = document.getElementById('media-container');
     const opisEl = document.getElementById('opis');
@@ -275,23 +206,16 @@
     const wsparcieEl = document.getElementById('wsparcie');
     const aparatEl = document.getElementById('aparat');
     const miejsceEl = document.getElementById('miejsce');
-    
-    // Funkcja wyświetlająca media
+
     function showMedia(index) {
       const item = media[index];
-      mediaContainer.innerHTML = '';  // czyścimy poprzedni obraz/film
-      
+      mediaContainer.innerHTML = '';
+
       if (item.type === 'image') {
-        // Tworzymy wrapper do obrazu – bez dodawanego kwadratu w lewym dolnym rogu
-        const wrapper = document.createElement('div');
-        wrapper.className = 'img-wrapper';
-        
         const img = document.createElement('img');
         img.src = item.src;
         img.alt = item.opis;
-        wrapper.appendChild(img);
-        
-        mediaContainer.appendChild(wrapper);
+        mediaContainer.appendChild(img);
       } else if (item.type === 'video') {
         const video = document.createElement('video');
         video.src = item.src;
@@ -301,47 +225,37 @@
         video.controls = false;
         mediaContainer.appendChild(video);
       }
-      
-      // Aktualizacja opisów – efekt animacji
+
       scrambleText(opisEl, "Opis: " + item.opis, 500);
       scrambleText(modelEl, "Model: " + item.model, 500);
       scrambleText(wsparcieEl, "Wsparcie: " + item.wsparcie, 500);
       scrambleText(aparatEl, "Aparat: " + item.aparat, 500);
       scrambleText(miejsceEl, "Miejsce: " + item.miejsce, 500);
-      
-      // Przy zmianie obrazu przywracamy widoczność galerii
-      document.querySelector('.gallery').style.opacity = "1";
     }
-    
+
     showMedia(currentIndex);
-    
-    // Kliknięcie na kontener mediów: jeśli sekcja jest otwarta, najpierw ją zamykamy, a po opóźnieniu przełączamy obraz
+
     mediaContainer.addEventListener('click', function() {
-      if (document.getElementById('content-overlay').style.display === "block") {
-        closeOverlay();
-        setTimeout(() => {
-          currentIndex = (currentIndex + 1) % media.length;
-          showMedia(currentIndex);
-        }, 500);
-      } else {
-        currentIndex = (currentIndex + 1) % media.length;
-        showMedia(currentIndex);
-      }
+      currentIndex = (currentIndex + 1) % media.length;
+      showMedia(currentIndex);
     });
-    
-    // Obsługa menu – wyświetlanie sekcji lub przekierowanie dla galerii
+
     const header = document.getElementById('header');
     const menu = document.getElementById('menu');
     const gallery = document.getElementById('gallery');
     const overlay = document.getElementById('content-overlay');
     const contentSections = document.querySelectorAll('.content-section');
-    
+    const closeButton = document.getElementById('close-button');
+
     const menuLinks = document.querySelectorAll('.menu a');
     menuLinks.forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault();
         const sectionId = this.getAttribute('data-section');
         if (sectionId === "galeria") {
+          header.style.transform = "translateY(-100%)";
+          menu.style.transform = "translateX(-100%)";
+          gallery.style.transform = "translateX(100%)";
           header.style.opacity = "0";
           menu.style.opacity = "0";
           gallery.style.opacity = "0";
@@ -349,20 +263,21 @@
             window.location.href = "https://www.instagram.com/";
           }, 500);
         } else {
-          // Najpierw ukrywamy galerię (zdjęcia)
-          gallery.style.opacity = "0";
           contentSections.forEach(sec => sec.style.display = 'none');
           const selectedSection = document.getElementById(sectionId);
           if (selectedSection) {
+            gallery.classList.add('slide-out');
             overlay.style.display = 'block';
             selectedSection.style.display = 'block';
             animateOverlay(selectedSection);
+            setTimeout(() => {
+              closeButton.style.display = 'block';
+            }, 500);
           }
         }
       });
     });
-    
-    // Funkcja animująca tekst w otwieranych sekcjach
+
     function animateOverlay(section) {
       const texts = section.querySelectorAll('h3, p');
       texts.forEach(el => {
@@ -371,13 +286,13 @@
         scrambleText(el, finalText, 500);
       });
     }
-    
-    // Funkcja zamykająca wyświetlaną sekcję – przywracamy widoczność galerii
-    function closeOverlay() {
+
+    closeButton.addEventListener('click', function() {
       overlay.style.display = 'none';
+      closeButton.style.display = 'none';
+      gallery.classList.remove('slide-out');
       contentSections.forEach(sec => sec.style.display = 'none');
-      gallery.style.opacity = "1";
-    }
+    });
   </script>
 </body>
 </html>
