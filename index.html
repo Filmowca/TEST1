@@ -46,9 +46,9 @@
     .menu a:hover { text-decoration: underline; }
     .gallery {
       position: absolute;
-      top: 70px;
-      right: 10px;
-      bottom: 10px;
+      top: 0;
+      right: 0;
+      bottom: 0;
       left: 150px;
       padding: 20px;
       overflow: hidden;
@@ -58,17 +58,20 @@
       opacity: 0;
     }
     #media-container {
-      position: relative;
-      width: 100%;
-      height: calc(100% - 70px);
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
       cursor: pointer;
     }
     #media-container img, #media-container video {
       position: absolute;
       top: 0;
       right: 0;
-      max-width: 100%;
-      max-height: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     #media-container video { pointer-events: none; }
     .meta-bar {
@@ -80,10 +83,11 @@
       padding: 10px;
       font-size: 14px;
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
     }
-    .meta-bar div { margin: 2px 0; }
+    .meta-bar div, .meta-bar button { margin: 0 10px; }
     .hidden { display: none; }
     .expand-button {
       background: none;
@@ -93,52 +97,9 @@
       font-family: 'Courier New', Courier, monospace;
       padding: 0;
       cursor: pointer;
-      margin-top: 5px;
     }
     @media screen and (max-width: 768px) {
-      .meta-bar { align-items: flex-start; }
-    }
-    #content-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 3;
-      pointer-events: none;
-    }
-    .content-section {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: auto;
-      background-color: rgba(0, 0, 0, 0.8);
-      padding: 20px;
-      color: white;
-      max-width: 80%;
-      max-height: 80%;
-      overflow: auto;
-    }
-    .close-button {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: white;
-    }
-    #o-mnie img {
-      display: block;
-      margin: 0 auto 10px;
-      max-width: 30%;
-    }
-    .content-section a {
-      text-decoration: underline;
-      color: white;
+      .meta-bar { flex-direction: column; align-items: flex-end; }
     }
   </style>
 </head>
@@ -155,33 +116,13 @@
   <div class="gallery" id="gallery">
     <div id="media-container"></div>
     <div class="meta-bar" id="meta-bar">
+      <div id="realizator">Realizator: Szymon Grzeszczak</div>
       <div id="model">Model:</div>
+      <button class="expand-button" id="expand-button">Rozwiń</button>
       <div id="opis" class="hidden">Opis: Przykładowe zdjęcie</div>
       <div id="wsparcie" class="hidden">Wsparcie:</div>
       <div id="aparat" class="hidden">Aparat:</div>
       <div id="miejsce" class="hidden">Miejsce:</div>
-      <button class="expand-button" id="expand-button">Rozwiń</button>
-    </div>
-  </div>
-  <div id="content-overlay">
-    <div id="o-mnie" class="content-section">
-      <button class="close-button">X</button>
-      <img src="DSC_8983.JPG" alt="Mój portret">
-      <h3>O mnie</h3>
-      <p>Nazywam się Szymon Grzeszczak moja pasja do fotografi BLA BLA BLA pełne portfolio w sekcji Galeria.</p>
-    </div>
-    <div id="kontakt" class="content-section">
-      <button class="close-button">X</button>
-      <h3>Kontakt</h3>
-      <p>Email: przyklad@example.com</p>
-      <p>
-        <a href="https://instagram.com/yourprofile" target="_blank">Instagram</a><br>
-        <a href="https://tiktok.com/@yourprofile" target="_blank">TikTok</a><br>
-        <a href="https://youtube.com/yourchannel" target="_blank">YouTube</a><br>
-        <a href="https://facebook.com/yourpage" target="_blank">Facebook</a>
-      </p>
-      <p>Wrocław, Polska</p>
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25289.65571124414!2d17.01914245!3d51.11042725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fe9c2d4b58abf%3A0xb70956aec205e0f5!2sWroc%C5%82aw%2C%20Poland!5e0!3m2!1sen!2sus!4v1630000000000!5m2!1sen!2sus" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
     </div>
   </div>
 
@@ -212,9 +153,9 @@
     }
 
     const media = [
-      { type: 'image', src: 'DSC_8911.JPG', opis: 'Pierwsze zdjęcie', model: 'Model A', wsparcie: 'Wsparcie A', aparat: 'Aparat A', miejsce: 'Miejsce A' },
-      { type: 'video', src: 'https://www.youtube.com/watch?v=C7OQHIpDlvA', opis: 'Pierwszy film', model: 'Model B', wsparcie: 'Wsparcie B', aparat: 'Aparat B', miejsce: 'Miejsce B' },
-      { type: 'image', src: 'DSC_8932.JPG', opis: 'Drugie zdjęcie', model: 'Model C', wsparcie: 'Wsparcie C', aparat: 'Aparat C', miejsce: 'Miejsce C' },
+      { type: 'image', src: 'DSC_8911.JPG', opis: 'Pierwsze zdjęcie', model: 'Model A', wsparcie: 'Wsparcie A', aparat: 'Aparat A', miejsce: 'Miejsce A', realizator: 'Szymon Grzeszczak' },
+      { type: 'video', src: 'https://www.youtube.com/watch?v=C7OQHIpDlvA', opis: 'Pierwszy film', model: 'Model B', wsparcie: 'Wsparcie B', aparat: 'Aparat B', miejsce: 'Miejsce B', realizator: 'Szymon Grzeszczak' },
+      { type: 'image', src: 'DSC_8932.JPG', opis: 'Drugie zdjęcie', model: 'Model C', wsparcie: 'Wsparcie C', aparat: 'Aparat C', miejsce: 'Miejsce C', realizator: 'Szymon Grzeszczak' },
     ];
 
     shuffle(media);
@@ -226,6 +167,7 @@
     const wsparcieEl = document.getElementById('wsparcie');
     const aparatEl = document.getElementById('aparat');
     const miejsceEl = document.getElementById('miejsce');
+    const realizatorEl = document.getElementById('realizator');
     const expandButton = document.getElementById('expand-button');
 
     function showMedia(index) {
@@ -247,6 +189,7 @@
         mediaContainer.appendChild(video);
       }
 
+      scrambleText(realizatorEl, "Realizator: " + item.realizator, 500);
       scrambleText(modelEl, "Model: " + item.model, 500);
       scrambleText(opisEl, "Opis: " + item.opis, 500);
       scrambleText(wsparcieEl, "Wsparcie: " + item.wsparcie, 500);
@@ -270,70 +213,15 @@
     expandButton.addEventListener('click', function() {
       const hiddenElements = [opisEl, wsparcieEl, aparatEl, miejsceEl];
       if (opisEl.classList.contains('hidden')) {
-        hiddenElements.forEach(el => el.classList.remove('hidden'));
+        hiddenElements.forEach(el => {
+          el.classList.remove('hidden');
+          scrambleText(el, el.textContent, 500);
+        });
         expandButton.textContent = "Zwiń";
       } else {
         hiddenElements.forEach(el => el.classList.add('hidden'));
         expandButton.textContent = "Rozwiń";
       }
-    });
-
-    const header = document.getElementById('header');
-    const menu = document.getElementById('menu');
-    const gallery = document.getElementById('gallery');
-    const overlay = document.getElementById('content-overlay');
-    const contentSections = document.querySelectorAll('.content-section');
-    const closeButtons = document.querySelectorAll('.close-button');
-
-    const menuLinks = document.querySelectorAll('.menu a');
-    menuLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const sectionId = this.getAttribute('data-section');
-        if (sectionId === "galeria") {
-          header.style.transform = "translateY(-100%)";
-          menu.style.transform = "translateX(-100%)";
-          gallery.style.transform = "translateX(100%)";
-          header.style.opacity = "0";
-          menu.style.opacity = "0";
-          gallery.style.opacity = "0";
-          setTimeout(() => {
-            window.location.href = "https://www.instagram.com/";
-          }, 500);
-        } else {
-          contentSections.forEach(sec => sec.style.display = 'none');
-          const selectedSection = document.getElementById(sectionId);
-          if (selectedSection) {
-            gallery.classList.add('slide-out');
-            overlay.style.display = 'block';
-            selectedSection.style.display = 'block';
-            animateOverlay(selectedSection);
-          }
-        }
-      });
-    });
-
-    function animateOverlay(section) {
-      const texts = section.querySelectorAll('h3, p');
-      texts.forEach(el => {
-        const finalText = el.textContent;
-        el.textContent = '';
-        scrambleText(el, finalText, 500);
-      });
-    }
-
-    closeButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        overlay.style.display = 'none';
-        contentSections.forEach(sec => sec.style.display = 'none');
-        gallery.classList.remove('slide-out');
-      });
-    });
-
-    document.getElementById('o-mnie').addEventListener('click', function() {
-      overlay.style.display = 'none';
-      contentSections.forEach(sec => sec.style.display = 'none');
-      gallery.classList.remove('slide-out');
     });
   </script>
 </body>
