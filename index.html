@@ -8,9 +8,9 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: black;
+      background-color: #333;
       color: white;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'Courier New', Courier, monospace;
       overflow: hidden;
     }
     .header {
@@ -21,8 +21,12 @@
       z-index: 2;
       transition: transform 0.5s ease-out, opacity 0.5s ease-out;
     }
-    .header h1 { margin: 0; font-size: 36px; }
-    .header h2 { margin: 0; font-size: 18px; }
+    .header h1, .header h2 {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .header h1 { font-size: 36px; }
+    .header h2 { font-size: 18px; }
     .menu {
       position: fixed;
       left: 10px;
@@ -48,9 +52,11 @@
       left: 150px;
       padding: 20px;
       overflow: hidden;
-      transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+      transition: opacity 0.3s ease-out;
     }
-    .gallery.slide-out { transform: translateX(100%) translateY(-100%); opacity: 0; }
+    .gallery.slide-out {
+      opacity: 0;
+    }
     #media-container {
       position: relative;
       width: 100%;
@@ -63,8 +69,6 @@
       right: 0;
       max-width: 100%;
       max-height: 100%;
-      border-left: 3px solid white;
-      border-bottom: 3px solid white;
     }
     #media-container video { pointer-events: none; }
     .meta-bar {
@@ -83,12 +87,13 @@
     .meta-bar div { margin: 2px 5px; }
     .hidden { display: none; }
     .expand-button {
-      background-color: #f0f0f0;
+      background: none;
       border: none;
-      padding: 5px 10px;
+      color: white;
+      text-decoration: underline;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 0;
       cursor: pointer;
-      color: black;
-      margin-top: 5px;
     }
     @media screen and (max-width: 768px) {
       .meta-bar { flex-direction: column; align-items: flex-start; }
@@ -127,10 +132,13 @@
       color: white;
     }
     #o-mnie img {
-      float: right;
-      max-width: 40%;
-      margin-left: 20px;
-      margin-bottom: 10px;
+      display: block;
+      margin: 0 auto 10px;
+      max-width: 30%;
+    }
+    .content-section a {
+      text-decoration: underline;
+      color: white;
     }
   </style>
 </head>
@@ -147,12 +155,11 @@
   <div class="gallery" id="gallery">
     <div id="media-container"></div>
     <div class="meta-bar" id="meta-bar">
+      <div id="model">Model: <button class="expand-button" id="expand-button">Rozwiń</button></div>
       <div id="opis" class="hidden">Opis: Przykładowe zdjęcie</div>
-      <div id="model">Model:</div>
       <div id="wsparcie" class="hidden">Wsparcie:</div>
       <div id="aparat" class="hidden">Aparat:</div>
       <div id="miejsce" class="hidden">Miejsce:</div>
-      <button class="expand-button" id="expand-button">Rozwiń</button>
     </div>
   </div>
   <div id="content-overlay">
@@ -165,7 +172,15 @@
     <div id="kontakt" class="content-section">
       <button class="close-button">X</button>
       <h3>Kontakt</h3>
-      <p>Email: przyklad@example.com<br> Instagram TikTok Youtube Facebook</p>
+      <p>Email: przyklad@example.com</p>
+      <p>
+        <a href="https://instagram.com/yourprofile" target="_blank">Instagram</a><br>
+        <a href="https://tiktok.com/@yourprofile" target="_blank">TikTok</a><br>
+        <a href="https://youtube.com/yourchannel" target="_blank">YouTube</a><br>
+        <a href="https://facebook.com/yourpage" target="_blank">Facebook</a>
+      </p>
+      <p>Wrocław, Polska</p>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25289.65571124414!2d17.01914245!3d51.11042725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fe9c2d4b58abf%3A0xb70956aec205e0f5!2sWroc%C5%82aw%2C%20Poland!5e0!3m2!1sen!2sus!4v1630000000000!5m2!1sen!2sus" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
     </div>
   </div>
 
@@ -235,9 +250,8 @@
       scrambleText(modelEl, "Model: " + item.model, 500);
       scrambleText(wsparcieEl, "Wsparcie: " + item.wsparcie, 500);
       scrambleText(aparatEl, "Aparat: " + item.aparat, 500);
-      scrambleText(miejsceEl, "M HUMAN: iejsce: " + item.miejsce, 500);
+      scrambleText(miejsceEl, "Miejsce: " + item.miejsce, 500);
 
-      // Resetowanie widoczności metadanych
       opisEl.classList.add('hidden');
       wsparcieEl.classList.add('hidden');
       aparatEl.classList.add('hidden');
@@ -313,6 +327,12 @@
         contentSections.forEach(sec => sec.style.display = 'none');
         gallery.classList.remove('slide-out');
       });
+    });
+
+    document.getElementById('o-mnie').addEventListener('click', function() {
+      overlay.style.display = 'none';
+      contentSections.forEach(sec => sec.style.display = 'none');
+      gallery.classList.remove('slide-out');
     });
   </script>
 </body>
