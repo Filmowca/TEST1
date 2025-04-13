@@ -8,10 +8,12 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #333;
+      background-color: #010101;
       color: white;
       font-family: 'Courier New', Courier, monospace;
       overflow: hidden;
+      opacity: 0;
+      transition: opacity 1s;
     }
     .header {
       position: fixed;
@@ -19,7 +21,6 @@
       left: 10px;
       text-align: left;
       z-index: 2;
-      transition: transform 0.5s ease-out, opacity 0.5s ease-out;
     }
     .header h1, .header h2 {
       margin: 0;
@@ -30,10 +31,8 @@
     .menu {
       position: fixed;
       left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
+      top: 20%;
       z-index: 2;
-      transition: transform 0.5s ease-out, opacity 0.5s ease-out;
     }
     .menu a {
       display: block;
@@ -52,185 +51,74 @@
       left: 150px;
       padding: 20px;
       overflow: hidden;
-      background: #333;
-    }
-    .gallery.slide-out {
-      opacity: 0;
+      background: #010101;
     }
     #media-container {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
+      position: relative;
+      width: 100%;
+      height: 100%;
     }
     #media-container img, #media-container video {
-      position: absolute;
-      top: 0;
-      right: 0; /* Przykleja media do prawej krawędzi */
-      width: auto; /* Zachowuje naturalną szerokość */
-      height: 100%; /* Wypełnia wysokość kontenera */
-      object-fit: contain; /* Zachowuje proporcje */
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
-    #media-container video { pointer-events: none; }
     .meta-bar {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      background-color: rgba(51, 51, 51, 0.8);
+      background-color: rgba(0, 0, 0, 0.7);
       padding: 10px;
-      font-size: 14px;
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-end;
-      align-items: center;
+      z-index: 1;
     }
-    .meta-bar div, .meta-bar button { margin: 0 10px; }
-    .hidden { display: none; }
-    .expand-button {
-      background: none;
-      border: none;
-      color: white;
-      text-decoration: underline;
-      font-family: 'Courier New', Courier, monospace;
-      padding: 0;
-      cursor: pointer;
-    }
-    @media screen and (max-width: 768px) {
-      .meta-bar { flex-direction: column; align-items: flex-end; }
-    }
-    #content-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 3;
-      pointer-events: none;
-    }
-    .content-section {
+    .dot {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: auto;
-      background-color: rgba(0, 0, 0, 0.8);
-      padding: 20px;
-      color: white;
-      max-width: 80%;
-      max-height: 80%;
-      overflow: auto;
+      bottom: 10px;
+      left: 10px;
+      width: 15px;
+      height: 15px;
+      background-color: white;
+      border-radius: 50%;
+      z-index: 2;
+      animation: slide-in 1s ease-out;
     }
-    .close-button {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: white;
-    }
-    #o-mnie img {
-      display: block;
-      margin: 0 auto 10px;
-      max-width: 30%;
-    }
-    .content-section a {
-      text-decoration: underline;
-      color: white;
+    @keyframes slide-in {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(0); }
     }
   </style>
 </head>
 <body>
-  <div class="header" id="header">
+  <div class="header">
     <h1>Szymon Grzeszczak</h1>
     <h2>Filmowca.top</h2>
   </div>
-  <div class="menu" id="menu">
-    <a href="#" data-section="o-mnie">O mnie</a>
-    <a href="#" data-section="kontakt">Kontakt</a>
-    <a href="#" data-section="galeria">Galeria</a>
+  <div class="menu">
+    <a href="#" onclick="openSection('o-mnie')">O mnie</a>
+    <a href="#" onclick="openSection('kontakt')">Kontakt</a>
+    <a href="#" onclick="openSection('galeria')">Galeria</a>
   </div>
-  <div class="gallery" id="gallery">
+  <div class="gallery">
     <div id="media-container"></div>
     <div class="meta-bar" id="meta-bar">
       <div id="realizator">Realizator: Szymon Grzeszczak</div>
       <div id="model">Model:</div>
-      <button class="expand-button" id="expand-button">Rozwiń</button>
-      <div id="opis" class="hidden">Opis: Przykładowe zdjęcie</div>
-      <div id="wsparcie" class="hidden">Wsparcie:</div>
-      <div id="aparat" class="hidden">Aparat:</div>
-      <div id="miejsce" class="hidden">Miejsce:</div>
+      <div id="aparat">Aparat:</div>
     </div>
   </div>
-  <div id="content-overlay">
-    <div id="o-mnie" class="content-section">
-      <button class="close-button">X</button>
-      <img src="DSC_8983.JPG" alt="Mój portret">
-      <h3>O mnie</h3>
-      <p>Nazywam się Szymon Grzeszczak moja pasja do fotografi BLA BLA BLA pełne portfolio w sekcji Galeria.</p>
-    </div>
-    <div id="kontakt" class="content-section">
-      <button class="close-button">X</button>
-      <h3>Kontakt</h3>
-      <p>Email: przyklad@example.com</p>
-      <p>
-        <a href="https://instagram.com/yourprofile" target="_blank">Instagram</a><br>
-        <a href="https://tiktok.com/@yourprofile" target="_blank">TikTok</a><br>
-        <a href="https://youtube.com/yourchannel" target="_blank">YouTube</a><br>
-        <a href="https://facebook.com/yourpage" target="_blank">Facebook</a>
-      </p>
-      <p>Wrocław, Polska</p>
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25289.65571124414!2d17.01914245!3d51.11042725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fe9c2d4b58abf%3A0xb70956aec205e0f5!2sWroc%C5%82aw%2C%20Poland!5e0!3m2!1sen!2sus!4v1630000000000!5m2!1sen!2sus" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-    </div>
-  </div>
-
   <script>
-    function scrambleText(element, finalText, duration) {
-      const chars = '!<>-_\\/[]{}—=+*^?#________';
-      const totalIterations = finalText.length;
-      let currentIteration = 0;
-      const intervalTime = duration / totalIterations;
-      const originalText = finalText;
-      const scrambleInterval = setInterval(() => {
-        element.textContent = originalText.split('').map((letter, index) => {
-          return index < currentIteration ? originalText[index] : chars[Math.floor(Math.random() * chars.length)];
-        }).join('');
-        currentIteration++;
-        if (currentIteration > totalIterations) {
-          clearInterval(scrambleInterval);
-          element.textContent = originalText;
-        }
-      }, intervalTime);
-    }
-
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
-
     const media = [
-      { type: 'image', src: 'DSC_8911.JPG', opis: 'Pierwsze zdjęcie', model: 'Model A', wsparcie: 'Wsparcie A', aparat: 'Aparat A', miejsce: 'Miejsce A', realizator: 'Szymon Grzeszczak' },
-      { type: 'video', src: 'https://www.youtube.com/watch?v=C7OQHIpDlvA', opis: 'Pierwszy film', model: 'Model B', wsparcie: 'Wsparcie B', aparat: 'Aparat B', miejsce: 'Miejsce B', realizator: 'Szymon Grzeszczak' },
-      { type: 'image', src: 'DSC_8932.JPG', opis: 'Drugie zdjęcie', model: 'Model C', wsparcie: 'Wsparcie C', aparat: 'Aparat C', miejsce: 'Miejsce C', realizator: 'Szymon Grzeszczak' },
+      { type: 'image', src: 'path/to/image1.jpg', model: 'Model A', aparat: 'Aparat A' },
+      { type: 'video', src: 'path/to/video1.mp4', model: 'Model B', aparat: 'Aparat B' },
+      // Dodaj więcej mediów
     ];
-
-    shuffle(media);
 
     let currentIndex = 0;
     const mediaContainer = document.getElementById('media-container');
-    const opisEl = document.getElementById('opis');
-    const modelEl = document.getElementById('model');
-    const wsparcieEl = document.getElementById('wsparcie');
-    const aparatEl = document.getElementById('aparat');
-    const miejsceEl = document.getElementById('miejsce');
     const realizatorEl = document.getElementById('realizator');
-    const expandButton = document.getElementById('expand-button');
+    const modelEl = document.getElementById('model');
+    const aparatEl = document.getElementById('aparat');
 
     function showMedia(index) {
       const item = media[index];
@@ -239,7 +127,6 @@
       if (item.type === 'image') {
         const img = document.createElement('img');
         img.src = item.src;
-        img.alt = item.opis;
         mediaContainer.appendChild(img);
       } else if (item.type === 'video') {
         const video = document.createElement('video');
@@ -247,92 +134,22 @@
         video.autoplay = true;
         video.loop = true;
         video.muted = true;
-        video.controls = false;
         mediaContainer.appendChild(video);
       }
 
-      scrambleText(realizatorEl, "Realizator: " + item.realizator, 500);
-      scrambleText(modelEl, "Model: " + item.model, 500);
-      scrambleText(opisEl, "Opis: " + item.opis, 500);
-      scrambleText(wsparcieEl, "Wsparcie: " + item.wsparcie, 500);
-      scrambleText(aparatEl, "Aparat: " + item.aparat, 500);
-      scrambleText(miejsceEl, "Miejsce: " + item.miejsce, 500);
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      mediaContainer.appendChild(dot);
 
-      opisEl.classList.add('hidden');
-      wsparcieEl.classList.add('hidden');
-      aparatEl.classList.add('hidden');
-      miejsceEl.classList.add('hidden');
-      expandButton.textContent = "Rozwiń";
+      realizatorEl.textContent = 'Realizator: Szymon Grzeszczak';
+      modelEl.textContent = 'Model: ' + item.model;
+      aparatEl.textContent = 'Aparat: ' + item.aparat;
     }
 
     showMedia(currentIndex);
 
-    mediaContainer.addEventListener('click', function() {
-      currentIndex = (currentIndex + 1) % media.length;
-      showMedia(currentIndex);
-    });
-
-    expandButton.addEventListener('click', function() {
-      const hiddenElements = [opisEl, wsparcieEl, aparatEl, miejsceEl];
-      if (opisEl.classList.contains('hidden')) {
-        hiddenElements.forEach(el => {
-          el.classList.remove('hidden');
-          scrambleText(el, el.textContent, 500);
-        });
-        expandButton.textContent = "Zwiń";
-      } else {
-        hiddenElements.forEach(el => el.classList.add('hidden'));
-        expandButton.textContent = "Rozwiń";
-      }
-    });
-
-    const menuLinks = document.querySelectorAll('.menu a');
-    menuLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const sectionId = this.getAttribute('data-section');
-        if (sectionId === "galeria") {
-          header.style.transform = "translateY(-100%)";
-          menu.style.transform = "translateX(-100%)";
-          gallery.style.transform = "translateX(100%)";
-          header.style.opacity = "0";
-          menu.style.opacity = "0";
-          gallery.style.opacity = "0";
-          setTimeout(() => {
-            window.location.href = "https://www.instagram.com/";
-          }, 500);
-        } else {
-          contentSections.forEach(sec => sec.style.display = 'none');
-          const selectedSection = document.getElementById(sectionId);
-          if (selectedSection) {
-            gallery.classList.add('slide-out');
-            overlay.style.display = 'block';
-            selectedSection.style.display = 'block';
-            animateOverlay(selectedSection);
-          }
-        }
-      });
-    });
-
-    function animateOverlay(section) {
-      const texts = section.querySelectorAll('h3, p');
-      texts.forEach(el => {
-        const finalText = el.textContent;
-        el.textContent = '';
-        scrambleText(el, finalText, 500);
-      });
-    }
-
-    const contentSections = document.querySelectorAll('.content-section');
-    const overlay = document.getElementById('content-overlay');
-    const closeButtons = document.querySelectorAll('.close-button');
-
-    closeButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        overlay.style.display = 'none';
-        contentSections.forEach(sec => sec.style.display = 'none');
-        gallery.classList.remove('slide-out');
-      });
+    window.addEventListener('load', function() {
+      document.body.style.opacity = 1;
     });
   </script>
 </body>
