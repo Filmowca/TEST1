@@ -13,35 +13,31 @@
       font-family: "Courier New", monospace;
       overflow-x: hidden;
     }
-    body { animation: fadeIn 2s ease; }
+    body {
+      animation: fadeIn 2s ease;
+    }
     @keyframes fadeIn {
       from { opacity: 0; }
       to   { opacity: 1; }
     }
     header {
-      padding: 10px 20px;
-      position: relative;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
       z-index: 1100;
     }
     .logo {
       font-size: 2rem;
       font-weight: bold;
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      z-index: 2000;
     }
     .logo-sub {
       font-size: 1.2rem;
-      position: absolute;
-      top: 45px;
-      left: 10px;
-      z-index: 2000;
     }
     nav {
       padding: 10px 20px;
-      position: relative;
       z-index: 1100;
     }
     nav ul {
@@ -72,6 +68,7 @@
       opacity: 1;
       transform: translateX(0);
     }
+
     #slider {
       position: fixed;
       top: 0;
@@ -100,8 +97,10 @@
       height: 20px;
       background: #fff;
       border-radius: 50%;
+      transform: translate(-50%, 50%);
       z-index: 105;
     }
+
     #description {
       position: fixed;
       bottom: 0;
@@ -145,18 +144,27 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
+
     #omnie-content {
       display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 15px;
       align-items: center;
+      text-align: center;
     }
     #omnie-content img {
       max-width: 200px;
       width: 100%;
       height: auto;
     }
-    #omnie-content p { flex: 1; }
+    #omnie-text strong {
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+    #omnie-text span {
+      font-size: 1rem;
+    }
 
     .kontakt-columns {
       display: flex;
@@ -192,8 +200,7 @@
     }
   </style>
 </head>
-<body> 
-  <header>
+<body>   <header>
     <div class="logo">SG. Media.pl</div>
     <div class="logo-sub">Szymon Grzeszczak</div>
   </header>
@@ -217,16 +224,21 @@
     <div id="desc-aparat"></div>
   </div>
 
+  <!-- Overlay O mnie -->
   <div id="omnie" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
       <div id="omnie-content">
         <img src="o_mnie.jpg" alt="O mnie">
-        <p id="omnie-text"></p>
+        <p id="omnie-text">
+          <strong>Nazywam się Szymon Grzeszczak</strong>
+          <span>i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy. Moja pasja przekłada się na każdy projekt.</span>
+        </p>
       </div>
     </div>
   </div>
 
+  <!-- Overlay Kontakt -->
   <div id="kontakt" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
@@ -247,179 +259,190 @@
     </div>
   </div>
 
-  <canvas id="sandCanvas" width="1920" height="1080"></canvas>
-
-  <script>
-    class TextScramble {
-      constructor(el) {
-        this.el = el;
-        this.chars = '!<>-_\\/[]{}—=+*^?#________';
-        this.update = this.update.bind(this);
+  <!-- Canvas dla efektu piasku -->
+  <canvas id="sandCanvas" width="1920" height="1080"></canvas> <script>
+  class TextScramble {
+    constructor(el) {
+      this.el = el;
+      this.chars = '!<>-_\\/[]{}—=+*^?#________';
+      this.update = this.update.bind(this);
+    }
+    setText(newText) {
+      const oldText = this.el.innerText;
+      const length = Math.max(oldText.length, newText.length);
+      const promise = new Promise(resolve => this.resolve = resolve);
+      this.queue = [];
+      for (let i = 0; i < length; i++) {
+        const from = oldText[i] || '';
+        const to = newText[i] || '';
+        const start = Math.floor(Math.random() * 40);
+        const end = start + Math.floor(Math.random() * 40);
+        this.queue.push({ from, to, start, end });
       }
-      setText(newText) {
-        const oldText = this.el.innerText;
-        const length = Math.max(oldText.length, newText.length);
-        const promise = new Promise((resolve) => this.resolve = resolve);
-        this.queue = [];
-        for (let i = 0; i < length; i++) {
-          const from = oldText[i] || '';
-          const to = newText[i] || '';
-          const start = Math.floor(Math.random() * 40);
-          const end = start + Math.floor(Math.random() * 40);
-          this.queue.push({ from, to, start, end });
-        }
-        cancelAnimationFrame(this.frameRequest);
-        this.frame = 0;
-        this.update();
-        return promise;
-      }
-      update() {
-        let output = '';
-        let complete = 0;
-        for (let i = 0, n = this.queue.length; i < n; i++) {
-          let { from, to, start, end, char } = this.queue[i];
-          if (this.frame >= end) {
-            complete++;
-            output += to;
-          } else if (this.frame >= start) {
-            if (!char || Math.random() < 0.28) {
-              char = this.randomChar();
-              this.queue[i].char = char;
-            }
-            output += `<span class="dud">${char}</span>`;
-          } else {
-            output += from;
+      cancelAnimationFrame(this.frameRequest);
+      this.frame = 0;
+      this.update();
+      return promise;
+    }
+    update() {
+      let output = '';
+      let complete = 0;
+      for (let i = 0, n = this.queue.length; i < n; i++) {
+        let { from, to, start, end, char } = this.queue[i];
+        if (this.frame >= end) {
+          complete++;
+          output += to;
+        } else if (this.frame >= start) {
+          if (!char || Math.random() < 0.28) {
+            char = this.randomChar();
+            this.queue[i].char = char;
           }
-        }
-        this.el.innerHTML = output;
-        if (complete === this.queue.length) {
-          this.resolve();
+          output += `<span class="dud">${char}</span>`;
         } else {
-          this.frameRequest = requestAnimationFrame(this.update);
-          this.frame++;
+          output += from;
         }
       }
-      randomChar() {
-        return this.chars[Math.floor(Math.random() * this.chars.length)];
+      this.el.innerHTML = output;
+      if (complete === this.queue.length) {
+        this.resolve();
+      } else {
+        this.frameRequest = requestAnimationFrame(this.update);
+        this.frame++;
       }
     }
+    randomChar() {
+      return this.chars[Math.floor(Math.random() * this.chars.length)];
+    }
+  }
 
-    const slides = [
-      { src: "DSC_8911.JPG", model: "Anna K.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
-      { src: "DSC_8932.JPG", model: "Kamil T.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
-      { src: "DSC_8971.JPG", model: "Magda R.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
-      { src: "DSC_8983.JPG", model: "Tomek P.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
-      { src: "DSC_8988.JPG", model: "Ola M.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
-      { src: "DSC_9035.JPG", model: "Piotr W.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
-      { src: "DSC_9038.JPG", model: "Julia S.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
-      { src: "DSC_9048.JPG", model: "Marek K.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
-      { src: "DSC_9057.JPG", model: "Karolina D.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
-      { src: "DSC_9067.JPG", model: "-", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" }
-    ];    let currentSlide = 0;
-    const realDiv = document.getElementById("desc-real");
-    const modelDiv = document.getElementById("desc-model");
-    const aparatDiv = document.getElementById("desc-aparat");
+  const slides = [
+    { src: "DSC_8911.JPG", model: "Anna K.", real: "Realizator: Szymon Grzeszczak", aparat: "Aparat: Nikon D300", orientation: "landscape" },
+    { src: "DSC_8932.JPG", model: "Kamil T.", real: "Realizator: Szymon Grzeszczak", aparat: "Aparat: Nikon D300", orientation: "landscape" },
+    { src: "DSC_8971.JPG", model: "Magda R.", real: "Realizator: Szymon Grzeszczak", aparat: "Aparat: Nikon D300", orientation: "portrait" },
+    { src: "DSC_8983.JPG", model: "Tomek P.", real: "Realizator: Szymon Grzeszczak", aparat: "Aparat: Nikon D300", orientation: "portrait" },
+    { src: "DSC_9057.JPG", model: "Karolina D.", real: "Realizator: Szymon Grzeszczak", aparat: "Aparat: Nikon D300", orientation: "landscape" }
+  ];
 
-    const scrambleReal = new TextScramble(realDiv);
-    const scrambleModel = new TextScramble(modelDiv);
-    const scrambleAparat = new TextScramble(aparatDiv);
+  let currentSlide = 0;
+  const realDiv = document.getElementById("desc-real");
+  const modelDiv = document.getElementById("desc-model");
+  const aparatDiv = document.getElementById("desc-aparat");
 
-    function showSlide(index) {
-      const slide = slides[index];
-      document.getElementById("slideImage").src = slide.src;
-      scrambleReal.setText(slide.real);
-      scrambleModel.setText("MODEL: " + slide.model.toUpperCase());
-      scrambleAparat.setText(slide.aparat);
+  const fxReal = new TextScramble(realDiv);
+  const fxModel = new TextScramble(modelDiv);
+  const fxAparat = new TextScramble(aparatDiv);
+
+  function showSlide(index) {
+    const slide = slides[index];
+    const img = document.getElementById("slideImage");
+    img.src = slide.src;
+
+    if (slide.orientation === "portrait") {
+      img.style.objectFit = "contain";
+      img.style.objectPosition = "center";
+    } else {
+      img.style.objectFit = "cover";
     }
 
-    function nextSlide() {
-      currentSlide = (currentSlide + 1) % slides.length;
-      showSlide(currentSlide);
-    }
+    fxReal.setText(slide.real);
+    fxModel.setText(slide.model ? `Model: ${slide.model}` : "");
+    fxAparat.setText(slide.aparat);
+  }
 
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % slides.length;
     showSlide(currentSlide);
+  }
 
-    function showOverlay(id) {
-      document.getElementById("slider").classList.add("hidden");
-      document.getElementById(id).classList.add("active");
-    }
-    function closeOverlay() {
-      document.getElementById("slider").classList.remove("hidden");
-      document.getElementById("omnie").classList.remove("active");
-      document.getElementById("kontakt").classList.remove("active");
-    }
+  showSlide(currentSlide);
 
-    // Scramble text in overlays
-    const omnieText = new TextScramble(document.getElementById("omnie-text"));
-    omnieText.setText("Cześć! Nazywam się Szymon Grzeszczak i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy. Moja pasja przekłada się na każdy projekt.");
+  function showOverlay(id) {
+    document.getElementById("slider").classList.add("hidden");
+    document.getElementById(id).classList.add("active");
 
-    const emailText = new TextScramble(document.getElementById("email-text"));
-    emailText.setText("kontakt@lgmedia.pl");
-
-    const socialsText = new TextScramble(document.getElementById("socials-text"));
-    socialsText.setText("Instagram\nFacebook\nYouTube\nTikTok");
-
-    // SIMPLE PARTICLE ENGINE
-    const canvas = document.getElementById("sandCanvas");
-    const ctx = canvas.getContext("2d");
-    let particles = [];
-
-    function Particle() {
-      this.x = window.innerWidth / 2 + (Math.random() * 100 - 50);
-      this.y = -10;
-      this.radius = 3 + Math.random() * 2;
-      this.vx = Math.random() * 2 - 1;
-      this.vy = 1 + Math.random() * 2;
+    if (id === 'omnie') {
+      const p = document.getElementById("omnie-text");
+      const fx = new TextScramble(p);
+      fx.setText("Nazywam się Szymon Grzeszczak i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy.");
     }
 
-    Particle.prototype.update = function () {
-      this.x += this.vx;
-      this.y += this.vy;
-      if (this.y + this.radius > canvas.height) {
-        this.y = canvas.height - this.radius;
-        this.vy *= -0.3;
-      }
-      if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
-        this.vx *= -1;
-      }
+    if (id === 'kontakt') {
+      const email = document.getElementById("email-text");
+      const social = document.getElementById("socials-text");
+      new TextScramble(email).setText("kontakt@lgmedia.pl");
+      new TextScramble(social).setText("Instagram\nFacebook\nYouTube\nTikTok");
     }
+  }
 
-    Particle.prototype.draw = function () {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fillStyle = "white";
-      ctx.fill();
+  function closeOverlay() {
+    document.getElementById("slider").classList.remove("hidden");
+    document.getElementById("omnie").classList.remove("active");
+    document.getElementById("kontakt").classList.remove("active");
+  }
+</script> <script>
+  const canvas = document.getElementById("sandCanvas");
+  const ctx = canvas.getContext("2d");
+  let grains = [];
+  const cols = Math.floor(canvas.width / 4);
+  const heights = Array(cols).fill(0);
+
+  function Grain(x) {
+    this.x = x;
+    this.y = -5;
+    this.radius = 2 + Math.random() * 1;
+    this.speed = 1 + Math.random() * 2;
+    this.column = Math.floor(x / 4);
+  }
+
+  Grain.prototype.update = function () {
+    let targetY = canvas.height - heights[this.column];
+    if (this.y + this.speed < targetY) {
+      this.y += this.speed;
+    } else {
+      this.y = targetY;
+      heights[this.column] += 1;
+      this.settled = true;
     }
+  };
 
-    function animateParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        p.update();
-        p.draw();
-      });
-      requestAnimationFrame(animateParticles);
+  Grain.prototype.draw = function () {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = "#fff";
+    ctx.fill();
+  };
+
+  function animateSand() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    grains.forEach(grain => {
+      if (!grain.settled) grain.update();
+      grain.draw();
+    });
+    grains = grains.filter(g => !g.settled || g.y > -5);
+    requestAnimationFrame(animateSand);
+  }
+
+  let sandTimer = null;
+  function startSandEffect() {
+    if (!sandTimer) {
+      sandTimer = setInterval(() => {
+        const x = canvas.width * 0.5 + (Math.random() - 0.5) * 200;
+        grains.push(new Grain(x));
+        if (grains.length > 1000) grains.shift();
+      }, 100);
+      animateSand();
     }
+  }
 
-    let sandTimer;
-    function startSandParticles() {
-      if (!sandTimer) {
-        sandTimer = setInterval(() => {
-          particles.push(new Particle());
-          if (particles.length > 200) particles.shift();
-        }, 300);
-        animateParticles();
-      }
-    }
+  let inactivityTimer;
+  function resetInactivity() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(startSandEffect, 30000);
+  }
 
-    let activityTimeout;
-    function resetInactivityTimer() {
-      clearTimeout(activityTimeout);
-      activityTimeout = setTimeout(startSandParticles, 30000);
-    }
-
-    document.addEventListener("mousemove", resetInactivityTimer);
-    document.addEventListener("keydown", resetInactivityTimer);
-    resetInactivityTimer();
-  </script>
+  document.addEventListener("mousemove", resetInactivity);
+  document.addEventListener("keydown", resetInactivity);
+  resetInactivity();
+</script>
 </body>
 </html>
