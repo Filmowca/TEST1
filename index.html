@@ -5,38 +5,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Szymon Grzeszczak Filmowca.top</title>
   <style>
-    body, html {
+    body {
       margin: 0;
       padding: 0;
       background-color: #010101;
       color: white;
       font-family: 'Courier New', Courier, monospace;
     }
+    .header {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 2;
+      display: block; /* Logo widoczne */
+    }
+    .header h1, .header h2 {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .menu {
+      position: fixed;
+      left: 10px;
+      top: 20%;
+      z-index: 2;
+    }
+    .menu a {
+      display: block;
+      margin-bottom: 10px;
+      color: white;
+      text-decoration: none;
+    }
+    .gallery {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 150px;
+      padding: 20px;
+      overflow: hidden;
+    }
+    #media-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      cursor: pointer; /* Wskazuje, że można kliknąć */
+    }
     #media-container img, #media-container video {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border: none; /* Usuwa białą ramkę */
     }
     .meta-bar {
-      display: flex;
-      justify-content: space-around; /* Podpisy obok siebie */
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
       background-color: rgba(0, 0, 0, 0.7);
       padding: 10px;
+      display: flex;
+      justify-content: space-around;
     }
-    .menu a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      cursor: pointer;
+    .section {
+      display: none; /* Sekcje domyślnie ukryte */
+      position: fixed;
+      top: 20%;
+      left: 20%;
+      width: 60%;
+      background: #333;
+      padding: 20px;
+      z-index: 3;
     }
   </style>
 </head>
 <body>
+  <div class="header">
+    <h1>Szymon Grzeszczak</h1>
+    <h2>Filmowca.top</h2>
+  </div>
   <div class="menu">
     <a href="#" onclick="openSection('o-mnie')">O mnie</a>
     <a href="#" onclick="openSection('kontakt')">Kontakt</a>
@@ -44,26 +89,39 @@
   </div>
   <div class="gallery">
     <div id="media-container"></div>
-    <div class="meta-bar" id="meta-bar">
-      <div id="realizator">Realizator: Szymon Grzeszczak</div>
-      <div id="model">Model:</div>
-      <div id="aparat">Aparat:</div>
+    <div class="meta-bar">
+      <div>Realizator: Szymon Grzeszczak</div>
+      <div>Model: Model A</div>
+      <div>Aparat: Aparat A</div>
     </div>
   </div>
+  <div id="o-mnie" class="section">
+    <h3>O mnie</h3>
+    <p>Treść sekcji "O mnie".</p>
+  </div>
+  <div id="kontakt" class="section">
+    <h3>Kontakt</h3>
+    <p>Treść sekcji "Kontakt".</p>
+  </div>
+  <div id="galeria" class="section">
+    <h3>Galeria</h3>
+    <p>Treść sekcji "Galeria".</p>
+  </div>
+
   <script>
+    // Tablica mediów - upewnij się, że ścieżki są poprawne!
     const media = [
-      { type: 'image', src: 'images/image1.jpg', model: 'Model A', aparat: 'Aparat A' },
-      { type: 'video', src: 'videos/video1.mp4', model: 'Model B', aparat: 'Aparat B' },
+      { type: 'image', src: 'images/image1.jpg' }, // Zmień na swoje ścieżki
+      { type: 'video', src: 'videos/video1.mp4' }  // Zmień na swoje ścieżki
     ];
 
     let currentIndex = 0;
     const mediaContainer = document.getElementById('media-container');
-    const modelEl = document.getElementById('model');
-    const aparatEl = document.getElementById('aparat');
 
+    // Funkcja wyświetlająca medium
     function showMedia(index) {
       const item = media[index];
-      mediaContainer.innerHTML = '';
+      mediaContainer.innerHTML = ''; // Czyścimy kontener
       if (item.type === 'image') {
         const img = document.createElement('img');
         img.src = item.src;
@@ -76,14 +134,22 @@
         video.muted = true;
         mediaContainer.appendChild(video);
       }
-      modelEl.textContent = 'Model: ' + item.model;
-      aparatEl.textContent = 'Aparat: ' + item.aparat;
     }
 
+    // Wyświetlamy pierwsze medium
     showMedia(currentIndex);
 
-    function openSection(section) {
-      alert('Otwieram sekcję: ' + section);
+    // Zdarzenie kliknięcia do zmiany mediów
+    mediaContainer.addEventListener('click', function() {
+      currentIndex = (currentIndex + 1) % media.length;
+      showMedia(currentIndex);
+    });
+
+    // Funkcja otwierająca sekcje
+    function openSection(sectionId) {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(section => section.style.display = 'none'); // Ukrywamy wszystkie
+      document.getElementById(sectionId).style.display = 'block'; // Pokazujemy wybraną
     }
   </script>
 </body>
