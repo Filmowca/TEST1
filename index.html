@@ -21,11 +21,13 @@
       from { opacity: 0; }
       to { opacity: 1; }
     }
-
-    /* Nagłówek (logo) */
+    
+    /* Nagłówek i menu */
     header {
       padding: 10px 20px;
       text-align: left;
+      z-index: 1100;
+      position: relative;
     }
     .logo {
       font-size: 2rem;
@@ -34,10 +36,10 @@
     .logo-sub {
       font-size: 1.2rem;
     }
-
-    /* Menu */
     nav {
       padding: 10px 20px;
+      z-index: 1100;
+      position: relative;
     }
     nav ul {
       list-style: none;
@@ -46,130 +48,67 @@
       display: flex;
       gap: 20px;
     }
-    nav ul li {
-      position: relative;
-    }
     nav ul li a {
       color: #fff;
       text-decoration: none;
       position: relative;
-      padding-bottom: 2px;
+      /* Brak widocznego podkreślenia domyślnie */
     }
-    /* Podkreślenie – domyślnie ukryte, pojawia się dopiero przy hover */
     nav ul li a::after {
       content: "";
       position: absolute;
-      bottom: 0;
+      bottom: -2px;
       left: 0;
-      transform: translateX(-100%);
       width: 100%;
       height: 2px;
       background: #fff;
-      transition: transform 0.3s ease;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(-100%);
     }
     nav ul li a:hover::after {
+      opacity: 1;
       transform: translateX(0);
     }
-
-    /* Slider – wyświetlany jest tylko jeden slajd na raz */
-    .slider {
-      position: relative;
-      width: 100%;
-      height: 80vh;
-      overflow: hidden;
-    }
-    .slide {
-      position: absolute;
-      width: 100%;
-      height: 100%;
+    
+    /* Slider – umieszczony w prawym górnym rogu */
+    #slider {
+      position: fixed;
       top: 0;
-      left: 0;
-      opacity: 0;
-      animation: fade 50s infinite ease-in-out;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      right: 0;
+      width: 800px;   /* Standardowy rozmiar zdjęcia – możesz dostosować */
+      height: 500px;
+      background: #000;
       cursor: pointer;
+      z-index: 100;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;  /* Obraz wyrównany do prawej */
     }
-    /* Ustawiamy opóźnienia dla kolejnych slajdów */
-    .slide:nth-child(1) { animation-delay: 0s; }
-    .slide:nth-child(2) { animation-delay: 5s; }
-    .slide:nth-child(3) { animation-delay: 10s; }
-    .slide:nth-child(4) { animation-delay: 15s; }
-    .slide:nth-child(5) { animation-delay: 20s; }
-    .slide:nth-child(6) { animation-delay: 25s; }
-    .slide:nth-child(7) { animation-delay: 30s; }
-    .slide:nth-child(8) { animation-delay: 35s; }
-    .slide:nth-child(9) { animation-delay: 40s; }
-    .slide:nth-child(10){ animation-delay: 45s; }
-    
-    @keyframes fade {
-      0% { opacity: 0; }
-      8% { opacity: 1; }
-      17% { opacity: 1; }
-      25% { opacity: 0; }
-      100% { opacity: 0; }
-    }
-    
-    /* Zdjęcie – pełna widoczność (bez przycinania) */
-    .slide img {
+    /* Ukazujemy tylko jeden obraz – bez animacji przejścia */
+    #slider img {
       width: 100%;
       height: 100%;
-      object-fit: contain; /* Zapewnia wyświetlenie całego zdjęcia */
+      object-fit: contain;
       display: block;
     }
-    /* Opis zdjęcia przyklejony do dolnej ramki slidera */
-    .slide-description {
-      position: absolute;
+    
+    /* Opis zdjęcia – przyklejony do dolnej ramki strony */
+    #description {
+      position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.9);
+      padding: 10px 0;
+      font-size: 1.2rem;
       display: flex;
       justify-content: space-around;
-      padding: 10px 0;
-      font-size: 1rem;
+      z-index: 110;
     }
-    .slide-description div { text-align: center; }
-
-    /* Overlay do pełnego podglądu zdjęcia po kliknięciu */
-    .img-preview-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.95);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1500;
-    }
-    .img-preview-overlay.active {
-      display: flex;
-    }
-    .img-preview-content {
-      max-width: 90%;
-      max-height: 90%;
-      overflow: auto;
-    }
-    .img-preview-content img {
-      width: auto;
-      height: auto;
-      max-width: 100%;
-      max-height: 100%;
-      display: block;
-    }
-    .img-preview-close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 1.5rem;
-      cursor: pointer;
-      z-index: 1600;
-    }
-
-    /* Overlay sekcji O mnie i Kontakt */
+    #description div { text-align: center; }
+    
+    /* Overlay sekcji O mnie i Kontakt – pozostają bez zmian */
     .overlay {
       position: fixed;
       top: 0;
@@ -177,7 +116,7 @@
       width: 100%;
       height: 100%;
       background-color: #000;
-      z-index: 1000;
+      z-index: 1200;
       display: none;
       align-items: center;
       justify-content: center;
@@ -200,13 +139,12 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
-    /* Przykładowa animacja miksowania liter */
     @keyframes scramble {
       0% { opacity: 0.5; letter-spacing: 2px; }
       100% { opacity: 1; letter-spacing: normal; }
     }
-
-    /* Sekcja O mnie – miejsce na zdjęcie obok tekstu */
+    
+    /* Sekcja O mnie – miejsce na zdjęcie i tekst */
     #omnie-content {
       display: flex;
       gap: 20px;
@@ -218,10 +156,8 @@
       width: 100%;
       height: auto;
     }
-    #omnie-content p {
-      flex: 1;
-    }
-
+    #omnie-content p { flex: 1; }
+    
     /* Sekcja Kontakt – trzy kolumny */
     .kontakt-columns {
       display: flex;
@@ -240,10 +176,7 @@
       filter: grayscale(100%);
     }
     
-    /* Ukrywanie slidera, gdy aktywny overlay (O mnie lub Kontakt) */
-    .hidden { display: none; }
-    
-    /* Styl dla ziarenek piasku */
+    /* Efekt ziarenek piasku */
     .sand {
       position: fixed;
       top: -10px;
@@ -253,7 +186,7 @@
       border-radius: 50%;
       pointer-events: none;
       animation: fall 3s linear forwards;
-      z-index: 2000;
+      z-index: 1500;
     }
     @keyframes fall {
       0% { top: -10px; opacity: 1; }
@@ -263,13 +196,11 @@
 </head>
 <body>
 
-  <!-- Nagłówek (logo) -->
+  <!-- Nagłówek (logo) oraz menu – pozostają widoczne -->
   <header>
     <div class="logo">SGmedia.pl</div>
     <div class="logo-sub">Szymon Grzeszczak</div>
   </header>
-
-  <!-- Menu -->
   <nav>
     <ul>
       <li><a href="#" onclick="showOverlay('omnie')">O mnie</a></li>
@@ -278,106 +209,16 @@
     </ul>
   </nav>
 
-  <!-- Slider – wyświetlany tylko jeden slajd na raz -->
-  <div id="slider" class="slider">
-    <!-- Slajd 1 -->
-    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
-      <img src="DSC_8911.JPG" alt="DSC_8911">
-      <div class="slide-description">
-        <div><strong>Realizacja:</strong> Portret nocny</div>
-        <div><strong>Model:</strong> Anna K.</div>
-        <div><strong>Aparat:</strong> Nikon D750</div>
-      </div>
-    </div>
-    <!-- Slajd 2 -->
-    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
-      <img src="DSC_8932.JPG" alt="DSC_8932">
-      <div class="slide-description">
-        <div><strong>Realizacja:</strong> Industrial</div>
-        <div><strong>Model:</strong> Kamil T.</div>
-        <div><strong>Aparat:</strong> Sony A7III</div>
-      </div>
-    </div>
-    <!-- Slajd 3 -->
-    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
-      <img src="DSC_8971.JPG" alt="DSC_8971">
-      <div class="slide-description">
-        <div><strong>Realizacja:</strong> Plener leśny</div>
-        <div><strong>Model:</strong> Magda R.</div>
-        <div><strong>Aparat:</strong> Canon R6</div>
-      </div>
-    </div>
-    <!-- Slajd 4 -->
-    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
-      <img src="DSC_8983.JPG" alt="DSC_8983">
-      <div class="slide-description">
-        <div><strong>Realizacja:</strong> Architektura</div>
-        <div><strong>Model:</strong> Tomek P.</div>
-        <div><strong>Aparat:</strong> Fujifilm X-T3</div>
-      </div>
-    </div>
-    <!-- Slajd 5 -->
-    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
-      <img src="DSC_8988.JPG" alt="DSC_8988">
-      <div class="slide-description">
-        <div><strong>Realizacja:</strong> Portret studyjny</div>
-        <div><strong>Model:</strong> Ola M.</div>
-        <div><strong>Aparat:</strong> Nikon Z6</div>
-      </div>
-    </div>
-    <!-- Slajd 6 -->
-    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
-      <img src="DSC_9035.JPG" alt="DSC_9035">
-      <div class="slide-description">
-        <div><strong>Realizacja:</strong> Reportaż uliczny</div>
-        <div><strong>Model:</strong> Piotr W.</div>
-        <div><strong>Aparat:</strong> Canon 5D Mark IV</div>
-      </div>
-    </div>
-    <!-- Slajd 7 -->
-    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
-      <img src="DSC_9038.JPG" alt="DSC_9038">
-      <div class="slide-description">
-        <div><strong>Realizacja:</strong> Moda uliczna</div>
-        <div><strong>Model:</strong> Julia S.</div>
-        <div><strong>Aparat:</strong> Sony A6500</div>
-      </div>
-    </div>
-    <!-- Slajd 8 -->
-    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
-      <img src="DSC_9048.JPG" alt="DSC_9048">
-      <div class="slide-description">
-        <div><strong>Realizacja:</strong> Reportaż eventowy</div>
-        <div><strong>Model:</strong> Marek K.</div>
-        <div><strong>Aparat:</strong> Panasonic GH5</div>
-      </div>
-    </div>
-    <!-- Slajd 9 -->
-    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
-      <img src="DSC_9057.JPG" alt="DSC_9057">
-      <div class="slide-description">
-        <div><strong>Realizacja:</strong> Sesja plenerowa</div>
-        <div><strong>Model:</strong> Karolina D.</div>
-        <div><strong>Aparat:</strong> Olympus OM-D</div>
-      </div>
-    </div>
-    <!-- Slajd 10 -->
-    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
-      <img src="DSC_9067.JPG" alt="DSC_9067">
-      <div class="slide-description">
-        <div><strong>Realizacja:</strong> Fotografia krajobrazowa</div>
-        <div><strong>Model:</strong> -</div>
-        <div><strong>Aparat:</strong> Canon EOS R</div>
-      </div>
-    </div>
+  <!-- Slider – prezentowane jest jedno zdjęcie; kliknięcie przechodzi do kolejnego -->
+  <div id="slider" onclick="nextSlide()">
+    <img id="slideImage" src="" alt="Zdjęcie">
   </div>
 
-  <!-- Overlay do podglądu pełnego zdjęcia (przewijalne) -->
-  <div id="imgPreviewOverlay" class="img-preview-overlay">
-    <div class="img-preview-close" onclick="closeImagePreview()">X</div>
-    <div class="img-preview-content" id="imgPreviewContent">
-      <!-- Zdjęcie zostanie wstawione przez JS -->
-    </div>
+  <!-- Opis zdjęcia – przyklejony do dolnej ramki -->
+  <div id="description">
+    <div id="desc-real"></div>
+    <div id="desc-model"></div>
+    <div id="desc-aparat"></div>
   </div>
 
   <!-- Overlay sekcji O mnie -->
@@ -412,20 +253,48 @@
           <h3>Mapa Wrocławia</h3>
           <iframe 
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10015.37636258273!2d17.032936769226204!3d51.107885399999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fc36d0b5a4b2b%3A0x400c43f0b5a4b0!2sWroc%C5%82aw%2C%20Polska!5e0!3m2!1spl!2s!4v1590000000000!5m2!1spl!2s" 
-            allowfullscreen="" 
-            aria-hidden="false" 
-            tabindex="0">
+            allowfullscreen="" aria-hidden="false" tabindex="0">
           </iframe>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Kontener dla efektu spadających ziaren piasku -->
+  
+  <!-- Kontener dla efektu ziarenek piasku -->
   <div id="sand-container"></div>
 
   <script>
-    /* Funkcje dla overlay sekcji O mnie / Kontakt */
+    /* Lista slajdów – zmień nazwy plików oraz teksty wg potrzeb */
+    const slides = [
+      { src: "DSC_8911.JPG", real: "Portret nocny", model: "Anna K.", aparat: "Nikon D750" },
+      { src: "DSC_8932.JPG", real: "Industrial", model: "Kamil T.", aparat: "Sony A7III" },
+      { src: "DSC_8971.JPG", real: "Plener leśny", model: "Magda R.", aparat: "Canon R6" },
+      { src: "DSC_8983.JPG", real: "Architektura", model: "Tomek P.", aparat: "Fujifilm X-T3" },
+      { src: "DSC_8988.JPG", real: "Portret studyjny", model: "Ola M.", aparat: "Nikon Z6" },
+      { src: "DSC_9035.JPG", real: "Reportaż uliczny", model: "Piotr W.", aparat: "Canon 5D Mark IV" },
+      { src: "DSC_9038.JPG", real: "Moda uliczna", model: "Julia S.", aparat: "Sony A6500" },
+      { src: "DSC_9048.JPG", real: "Reportaż eventowy", model: "Marek K.", aparat: "Panasonic GH5" },
+      { src: "DSC_9057.JPG", real: "Sesja plenerowa", model: "Karolina D.", aparat: "Olympus OM-D" },
+      { src: "DSC_9067.JPG", real: "Fotografia krajobrazowa", model: "-", aparat: "Canon EOS R" }
+    ];
+    let currentSlide = 0;
+    
+    function showSlide(index) {
+      const slide = slides[index];
+      document.getElementById("slideImage").src = slide.src;
+      // Aktualizacja opisu – bez efektu fade, zmiana natychmiastowa
+      document.getElementById("desc-real").innerHTML = `<strong>Realizacja:</strong> ${slide.real}`;
+      document.getElementById("desc-model").innerHTML = `<strong>Model:</strong> ${slide.model}`;
+      document.getElementById("desc-aparat").innerHTML = `<strong>Aparat:</strong> ${slide.aparat}`;
+    }
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }
+    // Inicjuj pierwszy slajd
+    showSlide(currentSlide);
+    
+    /* Overlay dla sekcji O mnie / Kontakt */
     function showOverlay(id) {
       document.getElementById("slider").classList.add("hidden");
       document.getElementById(id).classList.add("active");
@@ -435,54 +304,45 @@
       document.getElementById("omnie").classList.remove("active");
       document.getElementById("kontakt").classList.remove("active");
     }
-
-    /* Funkcja podglądu pełnego zdjęcia – kliknięcie na slajd */
-    function showImagePreview(src) {
-      const previewOverlay = document.getElementById("imgPreviewOverlay");
-      const previewContent = document.getElementById("imgPreviewContent");
-      previewContent.innerHTML = '<img src="'+src+'" alt="Podgląd zdjęcia">';
-      previewOverlay.classList.add("active");
-    }
-    function closeImagePreview() {
-      document.getElementById("imgPreviewOverlay").classList.remove("active");
-    }
-
-    /* Inicjacja efektu spadającego piasku po 30s bez aktywności */
+    
+    /* Efekt spadających ziarenek piasku */
     let inactivityTimer;
     let sandInterval;
     const inactivityDelay = 30000; // 30 sekund
-
+    
     function resetInactivityTimer() {
       if (sandInterval) {
         clearInterval(sandInterval);
         sandInterval = null;
-        const sandContainer = document.getElementById("sand-container");
-        sandContainer.innerHTML = "";
+        document.getElementById("sand-container").innerHTML = "";
       }
       clearTimeout(inactivityTimer);
       inactivityTimer = setTimeout(startSandEffect, inactivityDelay);
     }
-
+    
     function startSandEffect() {
-      sandInterval = setInterval(spawnSandGrains, 1000); // co sekundę
+      sandInterval = setInterval(spawnSandGrains, 1000); // co sekundę spadają trzy ziarenka
     }
-
+    
     function spawnSandGrains() {
       const sandContainer = document.getElementById("sand-container");
       for (let i = 0; i < 3; i++) {
         const grain = document.createElement("div");
         grain.className = "sand";
-        // Losowy poziomy offset wokół środka ekranu (±100px od 50%)
-        const offset = Math.random() * 200 - 100;
-        grain.style.left = `calc(50% + ${offset}px)`;
+        // Ustal losowy początkowy offset w pobliżu środka (np. 45%-55%)
+        const offset = (Math.random() * 10) + 45;
+        grain.style.left = offset + "%";
+        // Aby uzyskać efekt „grupowania” (podobnego do klepsydry) – ustalamy docelowy offset blisko 50%
+        grain.dataset.targetLeft = (50 + (Math.random()*10 - 5)) + "%";
         sandContainer.appendChild(grain);
-        // Opcjonalnie: po animacji można usunąć ziarenko, jeśli chcesz ograniczyć ich liczbę
+        
+        // Po zakończeniu animacji (3s) usuń ziarenko (opcjonalnie)
         setTimeout(() => {
-          // grain.remove();
+          grain.remove();
         }, 3000);
       }
     }
-
+    
     document.addEventListener("mousemove", resetInactivityTimer);
     document.addEventListener("keydown", resetInactivityTimer);
     resetInactivityTimer();
