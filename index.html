@@ -19,6 +19,7 @@
       left: 10px;
       text-align: left;
       z-index: 2;
+      transition: transform 0.5s ease-out, opacity 0.5s ease-out;
     }
     .header h1, .header h2 {
       margin: 0;
@@ -32,6 +33,7 @@
       top: 50%;
       transform: translateY(-50%);
       z-index: 2;
+      transition: transform 0.5s ease-out, opacity 0.5s ease-out;
     }
     .menu a {
       display: block;
@@ -52,6 +54,9 @@
       overflow: hidden;
       background: #333;
     }
+    .gallery.slide-out {
+      opacity: 0;
+    }
     #media-container {
       position: absolute;
       top: 0;
@@ -62,10 +67,10 @@
     #media-container img, #media-container video {
       position: absolute;
       top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+      right: 0; /* Przykleja media do prawej krawędzi */
+      width: auto; /* Zachowuje naturalną szerokość */
+      height: 100%; /* Wypełnia wysokość kontenera */
+      object-fit: contain; /* Zachowuje proporcje */
     }
     #media-container video { pointer-events: none; }
     .meta-bar {
@@ -91,6 +96,9 @@
       font-family: 'Courier New', Courier, monospace;
       padding: 0;
       cursor: pointer;
+    }
+    @media screen and (max-width: 768px) {
+      .meta-bar { flex-direction: column; align-items: flex-end; }
     }
     #content-overlay {
       display: none;
@@ -163,7 +171,7 @@
       <button class="close-button">X</button>
       <img src="DSC_8983.JPG" alt="Mój portret">
       <h3>O mnie</h3>
-      <p>Nazywam się Szymon Grzeszczak, moja pasja do fotografii BLA BLA BLA, pełne portfolio w sekcji Galeria.</p>
+      <p>Nazywam się Szymon Grzeszczak moja pasja do fotografi BLA BLA BLA pełne portfolio w sekcji Galeria.</p>
     </div>
     <div id="kontakt" class="content-section">
       <button class="close-button">X</button>
@@ -223,12 +231,6 @@
     const miejsceEl = document.getElementById('miejsce');
     const realizatorEl = document.getElementById('realizator');
     const expandButton = document.getElementById('expand-button');
-    const header = document.getElementById('header');
-    const menu = document.getElementById('menu');
-    const gallery = document.getElementById('gallery');
-    const overlay = document.getElementById('content-overlay');
-    const contentSections = document.querySelectorAll('.content-section');
-    const closeButtons = document.querySelectorAll('.close-button');
 
     function showMedia(index) {
       const item = media[index];
@@ -320,6 +322,10 @@
         scrambleText(el, finalText, 500);
       });
     }
+
+    const contentSections = document.querySelectorAll('.content-section');
+    const overlay = document.getElementById('content-overlay');
+    const closeButtons = document.querySelectorAll('.close-button');
 
     closeButtons.forEach(button => {
       button.addEventListener('click', function() {
