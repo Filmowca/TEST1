@@ -4,39 +4,40 @@
   <meta charset="UTF-8">
   <title>SGmedia.pl - Szymon Grzeszczak</title>
   <style>
-    /* Globalne ustawienia */
     * { box-sizing: border-box; }
     html, body {
       margin: 0;
       padding: 0;
       background-color: #000;
       color: #fff;
-      /* Domyślnie maszynowy font – poza logo, które używa modernistycznego */
       font-family: "Courier New", monospace;
       overflow-x: hidden;
     }
-    body {
-      animation: fadeIn 2s ease;
-    }
+    body { animation: fadeIn 2s ease; }
     @keyframes fadeIn {
       from { opacity: 0; }
       to   { opacity: 1; }
     }
-
-    /* Nagłówek i menu – pozostają widoczne zawsze */
     header {
       padding: 10px 20px;
       position: relative;
       z-index: 1100;
     }
-    /* Logo – nowoczesny font */
     .logo {
       font-size: 2rem;
       font-weight: bold;
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 2000;
     }
     .logo-sub {
       font-size: 1.2rem;
+      position: absolute;
+      top: 45px;
+      left: 10px;
+      z-index: 2000;
     }
     nav {
       padding: 10px 20px;
@@ -50,15 +51,11 @@
       display: flex;
       gap: 20px;
     }
-    nav ul li {
-      position: relative;
-    }
     nav ul li a {
       color: #fff;
       text-decoration: none;
       position: relative;
     }
-    /* Podkreślenie widoczne dopiero na hover */
     nav ul li a::after {
       content: "";
       position: absolute;
@@ -75,15 +72,11 @@
       opacity: 1;
       transform: translateX(0);
     }
-
-    /* Slider – umieszczony w prawym górnym rogu */
     #slider {
       position: fixed;
       top: 0;
       right: 0;
-      /* Ustalony rozmiar – dostosuj do swoich zdjęć */
       width: 800px;
-      /* Wysokość: od góry do miejsca, gdzie startuje dolny opis (60px wysokość opisu) */
       height: calc(100vh - 60px);
       background: #000;
       cursor: pointer;
@@ -99,7 +92,6 @@
       object-fit: contain;
       display: block;
     }
-    /* Białe kółko – w lewym dolnym rogu slidera */
     #slider .corner-circle {
       position: absolute;
       bottom: 0;
@@ -110,8 +102,6 @@
       border-radius: 50%;
       z-index: 105;
     }
-
-    /* Dolny opis zdjęcia – przyklejony do dolnej ramki strony */
     #description {
       position: fixed;
       bottom: 0;
@@ -127,17 +117,7 @@
       z-index: 110;
     }
     #description div { text-align: center; }
-    
-    /* Efekt "scramble" – natychmiastowe pojawienie się tekstu, z losowym przeskakiwaniem liter */
-    .scramble {
-      animation: scramble 1.5s steps(20) forwards;
-    }
-    @keyframes scramble {
-      0% { opacity: 0.2; letter-spacing: 5px; }
-      100% { opacity: 1; letter-spacing: normal; }
-    }
 
-    /* Overlayy dla sekcji O mnie i Kontakt */
     .overlay {
       position: fixed;
       top: 0;
@@ -157,7 +137,6 @@
       max-width: 600px;
       width: 90%;
       position: relative;
-      animation: scramble 2s steps(20) forwards;
     }
     .close {
       position: absolute;
@@ -166,8 +145,6 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
-    
-    /* Sekcja O mnie – zdjęcie obok tekstu */
     #omnie-content {
       display: flex;
       gap: 20px;
@@ -181,7 +158,6 @@
     }
     #omnie-content p { flex: 1; }
 
-    /* Sekcja Kontakt – bez tytułów; wyświetlamy e-mail, listę linków i mapę */
     .kontakt-columns {
       display: flex;
       flex-wrap: wrap;
@@ -191,7 +167,6 @@
       flex: 1;
       min-width: 200px;
     }
-    /* Nie wyświetlamy nagłówków */
     .kontakt-column h3 { display: none; }
     .kontakt-column p { margin: 5px 0; }
     .kontakt-column a {
@@ -208,31 +183,22 @@
       filter: grayscale(100%);
     }
 
-    /* Efekt ziarenka – jedno ziarenko spada co 0,3 sekundy */
-    .sand {
+    canvas#sandCanvas {
       position: fixed;
-      top: -10px;
-      width: 8px;
-      height: 8px;
-      background: #fff;
-      border-radius: 50%;
-      pointer-events: none;
-      animation: fall 3s linear forwards;
+      top: 0;
+      left: 0;
       z-index: 1500;
-    }
-    @keyframes fall {
-      0% { top: -10px; opacity: 1; }
-      100% { top: calc(100vh - 8px); opacity: 1; }
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
 
-  <!-- Nagłówek (logo i podtytuł) – zawsze widoczne -->
   <header>
     <div class="logo">SG. Media.pl</div>
     <div class="logo-sub">Szymon Grzeszczak</div>
   </header>
+
   <nav>
     <ul>
       <li><a href="#" onclick="showOverlay('omnie')">O mnie</a></li>
@@ -241,60 +207,40 @@
     </ul>
   </nav>
 
-  <!-- Slider – jedno zdjęcie widoczne; kliknięcie przełącza na kolejne -->
   <div id="slider" onclick="nextSlide()">
     <img id="slideImage" src="" alt="Zdjęcie">
     <div class="corner-circle"></div>
   </div>
 
-  <!-- Dolny opis zdjęcia z efektem scramble (aplikowany przy zmianie zdjęcia) -->
   <div id="description">
-    <div id="desc-real" class="scramble"></div>
-    <div id="desc-model" class="scramble"></div>
-    <div id="desc-aparat" class="scramble"></div>
+    <div id="desc-real"></div>
+    <div id="desc-model"></div>
+    <div id="desc-aparat"></div>
   </div>
 
-  <!-- Overlay sekcji O mnie -->
   <div id="omnie" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
-      <!-- Logo w overlay – takie samo jak na stronie głównej -->
-      <div class="logo">SG. Media.pl</div>
-      <div class="logo-sub">Szymon Grzeszczak</div>
       <div id="omnie-content">
         <img src="o_mnie.jpg" alt="O mnie">
-        <p class="scramble">
-          Cześć! Nazywam się Szymon Grzeszczak i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy. Moja pasja przekłada się na każdy projekt.
-        </p>
+        <p id="omnie-text"></p>
       </div>
     </div>
   </div>
 
-  <!-- Overlay sekcji Kontakt -->
   <div id="kontakt" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
-      <!-- Logo w overlay -->
-      <div class="logo">SG. Media.pl</div>
-      <div class="logo-sub">Szymon Grzeszczak</div>
       <div class="kontakt-columns">
-        <!-- Pozostawiamy e-mail -->
         <div class="kontakt-column">
-          <p class="scramble">kontakt@lgmedia.pl</p>
+          <p id="email-text"></p>
         </div>
-        <!-- Lista linków do social media (kliknięcia przekierowują) -->
         <div class="kontakt-column">
-          <p class="scramble">
-            <a href="https://www.instagram.com" target="_blank">Instagram</a><br>
-            <a href="https://www.facebook.com" target="_blank">Facebook</a><br>
-            <a href="https://www.youtube.com" target="_blank">YouTube</a><br>
-            <a href="https://www.tiktok.com" target="_blank">TikTok</a>
-          </p>
+          <p id="socials-text"></p>
         </div>
-        <!-- Osadzona mapa Wrocławia -->
         <div class="kontakt-column">
           <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10015.37636258273!2d17.032936769226204!3d51.107885399999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fc36d0b5a4b2b%3A0x400c43f0b5a4b0!2sWroc%C5%82aw%2C%20Polska!5e0!3m2!1spl!2s!4v1590000000000!5m2!1spl!2s" 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10015.37636258273!2d17.032936769226204!3d51.107885399999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fc36d0b5a4b2b%3A0x400c43f0b5a4b0!2sWroc%C5%82aw%2C%20Polska!5e0!3m2!1spl!2s!4v1590000000000!5m2!1spl!2s"
             allowfullscreen="" aria-hidden="false" tabindex="0">
           </iframe>
         </div>
@@ -302,58 +248,98 @@
     </div>
   </div>
 
-  <!-- Kontener dla spadającego piasku -->
-  <div id="sand-container"></div>
+  <canvas id="sandCanvas" width="1920" height="1080"></canvas>
 
   <script>
-    /* Lista slajdów – aktualizowane opisy:
-       Każdy slajd: real -> "realizator: Szymon Grzeszczak",
-                    aparat -> "aparat: Nikon D300"
-       Model pozostaje oryginalny (możesz zmienić wg potrzeb).
-    */
+    class TextScramble {
+      constructor(el) {
+        this.el = el;
+        this.chars = '!<>-_\\/[]{}—=+*^?#________';
+        this.update = this.update.bind(this);
+      }
+      setText(newText) {
+        const oldText = this.el.innerText;
+        const length = Math.max(oldText.length, newText.length);
+        const promise = new Promise((resolve) => this.resolve = resolve);
+        this.queue = [];
+        for (let i = 0; i < length; i++) {
+          const from = oldText[i] || '';
+          const to = newText[i] || '';
+          const start = Math.floor(Math.random() * 40);
+          const end = start + Math.floor(Math.random() * 40);
+          this.queue.push({ from, to, start, end });
+        }
+        cancelAnimationFrame(this.frameRequest);
+        this.frame = 0;
+        this.update();
+        return promise;
+      }
+      update() {
+        let output = '';
+        let complete = 0;
+        for (let i = 0, n = this.queue.length; i < n; i++) {
+          let { from, to, start, end, char } = this.queue[i];
+          if (this.frame >= end) {
+            complete++;
+            output += to;
+          } else if (this.frame >= start) {
+            if (!char || Math.random() < 0.28) {
+              char = this.randomChar();
+              this.queue[i].char = char;
+            }
+            output += `<span class="dud">${char}</span>`;
+          } else {
+            output += from;
+          }
+        }
+        this.el.innerHTML = output;
+        if (complete === this.queue.length) {
+          this.resolve();
+        } else {
+          this.frameRequest = requestAnimationFrame(this.update);
+          this.frame++;
+        }
+      }
+      randomChar() {
+        return this.chars[Math.floor(Math.random() * this.chars.length)];
+      }
+    }
+
     const slides = [
-      { src: "DSC_8911.JPG", model: "Anna K.", real: "realizator: Szymon Grzeszczak", aparat: "aparat: Nikon D300" },
-      { src: "DSC_8932.JPG", model: "Kamil T.", real: "realizator: Szymon Grzeszczak", aparat: "aparat: Nikon D300" },
-      { src: "DSC_8971.JPG", model: "Magda R.", real: "realizator: Szymon Grzeszczak", aparat: "aparat: Nikon D300" },
-      { src: "DSC_8983.JPG", model: "Tomek P.", real: "realizator: Szymon Grzeszczak", aparat: "aparat: Nikon D300" },
-      { src: "DSC_8988.JPG", model: "Ola M.", real: "realizator: Szymon Grzeszczak", aparat: "aparat: Nikon D300" },
-      { src: "DSC_9035.JPG", model: "Piotr W.", real: "realizator: Szymon Grzeszczak", aparat: "aparat: Nikon D300" },
-      { src: "DSC_9038.JPG", model: "Julia S.", real: "realizator: Szymon Grzeszczak", aparat: "aparat: Nikon D300" },
-      { src: "DSC_9048.JPG", model: "Marek K.", real: "realizator: Szymon Grzeszczak", aparat: "aparat: Nikon D300" },
-      { src: "DSC_9057.JPG", model: "Karolina D.", real: "realizator: Szymon Grzeszczak", aparat: "aparat: Nikon D300" },
-      { src: "DSC_9067.JPG", model: "-",       real: "realizator: Szymon Grzeszczak", aparat: "aparat: Nikon D300" }
-    ];
-    let currentSlide = 0;
+      { src: "DSC_8911.JPG", model: "Anna K.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
+      { src: "DSC_8932.JPG", model: "Kamil T.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
+      { src: "DSC_8971.JPG", model: "Magda R.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
+      { src: "DSC_8983.JPG", model: "Tomek P.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
+      { src: "DSC_8988.JPG", model: "Ola M.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
+      { src: "DSC_9035.JPG", model: "Piotr W.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
+      { src: "DSC_9038.JPG", model: "Julia S.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
+      { src: "DSC_9048.JPG", model: "Marek K.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
+      { src: "DSC_9057.JPG", model: "Karolina D.", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" },
+      { src: "DSC_9067.JPG", model: "-", real: "REALIZATOR: Szymon Grzeszczak", aparat: "APARAT: Nikon D300" }
+    ];    let currentSlide = 0;
+    const realDiv = document.getElementById("desc-real");
+    const modelDiv = document.getElementById("desc-model");
+    const aparatDiv = document.getElementById("desc-aparat");
+
+    const scrambleReal = new TextScramble(realDiv);
+    const scrambleModel = new TextScramble(modelDiv);
+    const scrambleAparat = new TextScramble(aparatDiv);
+
     function showSlide(index) {
       const slide = slides[index];
       document.getElementById("slideImage").src = slide.src;
-      // Aktualizacja dolnych opisów – najpierw usuwamy klasy scramble, po krótkim czasie ustawiamy właściwy tekst i dodajemy scramble
-      const realDiv = document.getElementById("desc-real");
-      const modelDiv = document.getElementById("desc-model");
-      const aparatDiv = document.getElementById("desc-aparat");
-      
-      realDiv.classList.remove("scramble");
-      modelDiv.classList.remove("scramble");
-      aparatDiv.classList.remove("scramble");
-      
-      setTimeout(() => {
-        realDiv.innerHTML   = `<strong>${slide.real}</strong>`;
-        modelDiv.innerHTML  = `<strong>model:</strong> ${slide.model}`;
-        aparatDiv.innerHTML = `<strong>${slide.aparat}</strong>`;
-        
-        realDiv.classList.add("scramble");
-        modelDiv.classList.add("scramble");
-        aparatDiv.classList.add("scramble");
-      }, 50);
+      scrambleReal.setText(slide.real);
+      scrambleModel.setText("MODEL: " + slide.model.toUpperCase());
+      scrambleAparat.setText(slide.aparat);
     }
+
     function nextSlide() {
       currentSlide = (currentSlide + 1) % slides.length;
       showSlide(currentSlide);
     }
-    // Inicjalizacja pierwszego slajdu
+
     showSlide(currentSlide);
 
-    /* Overlay dla sekcji O mnie / Kontakt */
     function showOverlay(id) {
       document.getElementById("slider").classList.add("hidden");
       document.getElementById(id).classList.add("active");
@@ -364,41 +350,77 @@
       document.getElementById("kontakt").classList.remove("active");
     }
 
-    /* Efekt spadającego piasku – jedno ziarenko co 0,3 sekundy.
-       Dodatkowo – przy każdym ziarenku sprawdzamy, czy w kontenerze już są, 
-       a efekt "zbierania" lepiej wizualizujemy poprzez pozostawienie ich na dole.
-       Przy ruchu myszy lub naciśnięciu klawisza wszystkie ziarenka znikają.
-    */
-    let inactivityTimer;
-    let sandInterval;
-    const inactivityDelay = 30000; // 30 sekund
-    function resetInactivityTimer() {
-      if (sandInterval) {
-        clearInterval(sandInterval);
-        sandInterval = null;
-        document.getElementById("sand-container").innerHTML = "";
+    // Scramble text in overlays
+    const omnieText = new TextScramble(document.getElementById("omnie-text"));
+    omnieText.setText("Cześć! Nazywam się Szymon Grzeszczak i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy. Moja pasja przekłada się na każdy projekt.");
+
+    const emailText = new TextScramble(document.getElementById("email-text"));
+    emailText.setText("kontakt@lgmedia.pl");
+
+    const socialsText = new TextScramble(document.getElementById("socials-text"));
+    socialsText.setText("Instagram\nFacebook\nYouTube\nTikTok");
+
+    // SIMPLE PARTICLE ENGINE
+    const canvas = document.getElementById("sandCanvas");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+
+    function Particle() {
+      this.x = window.innerWidth / 2 + (Math.random() * 100 - 50);
+      this.y = -10;
+      this.radius = 3 + Math.random() * 2;
+      this.vx = Math.random() * 2 - 1;
+      this.vy = 1 + Math.random() * 2;
+    }
+
+    Particle.prototype.update = function () {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.y + this.radius > canvas.height) {
+        this.y = canvas.height - this.radius;
+        this.vy *= -0.3;
       }
-      clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(startSandEffect, inactivityDelay);
+      if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
+        this.vx *= -1;
+      }
     }
-    function startSandEffect() {
-      sandInterval = setInterval(spawnSandGrain, 300); // co 0,3s
+
+    Particle.prototype.draw = function () {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = "white";
+      ctx.fill();
     }
-    function spawnSandGrain() {
-      const sandContainer = document.getElementById("sand-container");
-      const grain = document.createElement("div");
-      grain.className = "sand";
-      // Ustal losowy początkowy offset w pobliżu środka (np. 45% do 55% szerokości)
-      const offset = (Math.random() * 10) + 45;
-      grain.style.left = offset + "%";
-      sandContainer.appendChild(grain);
-      // W tym uproszczonym przykładzie ziarenka nie oddziałują między sobą – 
-      // zaawansowaną symulację kolizji wymagałoby wprowadzenia fizyki (np. w canvas lub bibliotece)
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
     }
+
+    let sandTimer;
+    function startSandParticles() {
+      if (!sandTimer) {
+        sandTimer = setInterval(() => {
+          particles.push(new Particle());
+          if (particles.length > 200) particles.shift();
+        }, 300);
+        animateParticles();
+      }
+    }
+
+    let activityTimeout;
+    function resetInactivityTimer() {
+      clearTimeout(activityTimeout);
+      activityTimeout = setTimeout(startSandParticles, 30000);
+    }
+
     document.addEventListener("mousemove", resetInactivityTimer);
     document.addEventListener("keydown", resetInactivityTimer);
     resetInactivityTimer();
   </script>
 </body>
 </html>
-
