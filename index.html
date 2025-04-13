@@ -2,155 +2,370 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Szymon Grzeszczak Filmowca.top</title>
+  <title>SGmedia.pl - Szymon Grzeszczak</title>
   <style>
-    body {
+    /* Globalne ustawienia */
+    * { box-sizing: border-box; }
+    html, body {
       margin: 0;
       padding: 0;
-      background-color: #010101;
-      color: white;
-      font-family: 'Courier New', Courier, monospace;
+      background-color: #000;
+      color: #fff;
+      font-family: "Courier New", monospace;
+      overflow-x: hidden;
     }
-    .header {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      z-index: 2;
-      display: block; /* Logo widoczne */
+    body {
+      animation: fadeIn 2s ease;
     }
-    .header h1, .header h2 {
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Nagłówek i menu */
+    header {
+      padding: 10px 20px;
+      text-align: left;
+    }
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .logo-sub {
+      font-size: 1.2rem;
+    }
+    nav {
+      padding: 10px 20px;
+    }
+    nav ul {
+      list-style: none;
+      padding: 0;
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      gap: 20px;
     }
-    .menu {
-      position: fixed;
-      left: 10px;
-      top: 20%;
-      z-index: 2;
-    }
-    .menu a {
-      display: block;
-      margin-bottom: 10px;
-      color: white;
+    nav ul li a {
+      color: #fff;
       text-decoration: none;
+      position: relative;
+      padding-bottom: 2px;
     }
-    .gallery {
+    nav ul li a::after {
+      content: "";
       position: absolute;
-      top: 0;
-      right: 0;
       bottom: 0;
-      left: 150px;
-      padding: 20px;
-      overflow: hidden;
+      left: -100%;
+      width: 100%;
+      height: 2px;
+      background: #fff;
+      transition: left 0.3s;
     }
-    #media-container {
+    nav ul li a:hover::after {
+      left: 0;
+    }
+
+    /* Slider – tylko jedno zdjęcie widoczne naraz */
+    .slider {
       position: relative;
       width: 100%;
-      height: 100%;
-      cursor: pointer; /* Wskazuje, że można kliknąć */
+      height: 80vh;
+      margin: 0 auto;
+      overflow: hidden;
     }
-    #media-container img, #media-container video {
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      animation: fade 50s infinite ease-in-out;
+    }
+    /* Każdy slajd otrzymuje odpowiednie opóźnienie, by pokazać się po kolei */
+    .slide:nth-child(1) { animation-delay: 0s; }
+    .slide:nth-child(2) { animation-delay: 5s; }
+    .slide:nth-child(3) { animation-delay: 10s; }
+    .slide:nth-child(4) { animation-delay: 15s; }
+    .slide:nth-child(5) { animation-delay: 20s; }
+    .slide:nth-child(6) { animation-delay: 25s; }
+    .slide:nth-child(7) { animation-delay: 30s; }
+    .slide:nth-child(8) { animation-delay: 35s; }
+    .slide:nth-child(9) { animation-delay: 40s; }
+    .slide:nth-child(10){ animation-delay: 45s; }
+    
+    @keyframes fade {
+      0% { opacity: 0; }
+      8% { opacity: 1; }
+      17% { opacity: 1; }
+      25% { opacity: 0; }
+      100% { opacity: 0; }
+    }
+
+    /* Każdy slajd – zdjęcie + opis przyklejony do dolnej ramki */
+    .slide img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
-    .meta-bar {
+    .slide-description {
       position: absolute;
       bottom: 0;
       left: 0;
-      right: 0;
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 10px;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
       display: flex;
       justify-content: space-around;
+      padding: 10px 0;
+      font-size: 1rem;
     }
-    .section {
-      display: none; /* Sekcje domyślnie ukryte */
+    .slide-description div { text-align: center; }
+
+    /* Overlay sekcje (O mnie oraz Kontakt) */
+    .overlay {
       position: fixed;
-      top: 20%;
-      left: 20%;
-      width: 60%;
-      background: #333;
-      padding: 20px;
-      z-index: 3;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
     }
+    .overlay.active {
+      display: flex;
+    }
+    .overlay-content {
+      background: #000;
+      padding: 20px;
+      max-width: 600px;
+      width: 90%;
+      position: relative;
+      animation: scramble 2s steps(20) forwards;
+    }
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    /* Przykładowa animacja "miksowania" liter – efekt do dalszego rozwinięcia */
+    @keyframes scramble {
+      0% { opacity: 0.5; letter-spacing: 2px; }
+      100% { opacity: 1; letter-spacing: normal; }
+    }
+
+    /* Sekcja O mnie – dodane miejsce na zdjęcie */
+    #omnie-content {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    #omnie-content img {
+      max-width: 200px;
+      width: 100%;
+      height: auto;
+    }
+    #omnie-content p {
+      flex: 1;
+    }
+
+    /* Sekcja Kontakt – trzy kolumny */
+    .kontakt-columns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .kontakt-column {
+      flex: 1;
+      min-width: 200px;
+    }
+    .kontakt-column h3 { margin-top: 0; }
+    .kontakt-column iframe {
+      width: 100%;
+      height: 200px;
+      border: 0;
+      filter: grayscale(100%);
+    }
+    
+    /* Ukrywanie slidera, gdy aktywny overlay */
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>Szymon Grzeszczak</h1>
-    <h2>Filmowca.top</h2>
-  </div>
-  <div class="menu">
-    <a href="#" onclick="openSection('o-mnie')">O mnie</a>
-    <a href="#" onclick="openSection('kontakt')">Kontakt</a>
-    <a href="#" onclick="openSection('galeria')">Galeria</a>
-  </div>
-  <div class="gallery">
-    <div id="media-container"></div>
-    <div class="meta-bar">
-      <div>Realizator: Szymon Grzeszczak</div>
-      <div>Model: Model A</div>
-      <div>Aparat: Aparat A</div>
+
+  <!-- Nagłówek (logo) -->
+  <header>
+    <div class="logo">SGmedia.pl</div>
+    <div class="logo-sub">Szymon Grzeszczak</div>
+  </header>
+
+  <!-- Menu -->
+  <nav>
+    <ul>
+      <li><a href="#" onclick="showOverlay('omnie')">O mnie</a></li>
+      <li><a href="#" onclick="showOverlay('kontakt')">Kontakt</a></li>
+      <li><a href="https://przyklad.pl/galeria" target="_blank">Galeria</a></li>
+    </ul>
+  </nav>
+
+  <!-- Slider (strona główna z jednym zdjęciem naraz) -->
+  <div id="slider" class="slider">
+    <!-- Slajd 1 -->
+    <div class="slide">
+      <img src="DSC_8911.JPG" alt="DSC_8911">
+      <div class="slide-description">
+        <div><strong>Realizacja:</strong> Portret nocny</div>
+        <div><strong>Model:</strong> Anna K.</div>
+        <div><strong>Aparat:</strong> Nikon D750</div>
+      </div>
+    </div>
+    <!-- Slajd 2 -->
+    <div class="slide">
+      <img src="DSC_8932.JPG" alt="DSC_8932">
+      <div class="slide-description">
+        <div><strong>Realizacja:</strong> Industrial</div>
+        <div><strong>Model:</strong> Kamil T.</div>
+        <div><strong>Aparat:</strong> Sony A7III</div>
+      </div>
+    </div>
+    <!-- Slajd 3 -->
+    <div class="slide">
+      <img src="DSC_8971.JPG" alt="DSC_8971">
+      <div class="slide-description">
+        <div><strong>Realizacja:</strong> Plener leśny</div>
+        <div><strong>Model:</strong> Magda R.</div>
+        <div><strong>Aparat:</strong> Canon R6</div>
+      </div>
+    </div>
+    <!-- Slajd 4 -->
+    <div class="slide">
+      <img src="DSC_8983.JPG" alt="DSC_8983">
+      <div class="slide-description">
+        <div><strong>Realizacja:</strong> Architektura</div>
+        <div><strong>Model:</strong> Tomek P.</div>
+        <div><strong>Aparat:</strong> Fujifilm X-T3</div>
+      </div>
+    </div>
+    <!-- Slajd 5 -->
+    <div class="slide">
+      <img src="DSC_8988.JPG" alt="DSC_8988">
+      <div class="slide-description">
+        <div><strong>Realizacja:</strong> Portret studyjny</div>
+        <div><strong>Model:</strong> Ola M.</div>
+        <div><strong>Aparat:</strong> Nikon Z6</div>
+      </div>
+    </div>
+    <!-- Slajd 6 -->
+    <div class="slide">
+      <img src="DSC_9035.JPG" alt="DSC_9035">
+      <div class="slide-description">
+        <div><strong>Realizacja:</strong> Reportaż uliczny</div>
+        <div><strong>Model:</strong> Piotr W.</div>
+        <div><strong>Aparat:</strong> Canon 5D Mark IV</div>
+      </div>
+    </div>
+    <!-- Slajd 7 -->
+    <div class="slide">
+      <img src="DSC_9038.JPG" alt="DSC_9038">
+      <div class="slide-description">
+        <div><strong>Realizacja:</strong> Moda uliczna</div>
+        <div><strong>Model:</strong> Julia S.</div>
+        <div><strong>Aparat:</strong> Sony A6500</div>
+      </div>
+    </div>
+    <!-- Slajd 8 -->
+    <div class="slide">
+      <img src="DSC_9048.JPG" alt="DSC_9048">
+      <div class="slide-description">
+        <div><strong>Realizacja:</strong> Reportaż eventowy</div>
+        <div><strong>Model:</strong> Marek K.</div>
+        <div><strong>Aparat:</strong> Panasonic GH5</div>
+      </div>
+    </div>
+    <!-- Slajd 9 -->
+    <div class="slide">
+      <img src="DSC_9057.JPG" alt="DSC_9057">
+      <div class="slide-description">
+        <div><strong>Realizacja:</strong> Sesja plenerowa</div>
+        <div><strong>Model:</strong> Karolina D.</div>
+        <div><strong>Aparat:</strong> Olympus OM-D</div>
+      </div>
+    </div>
+    <!-- Slajd 10 -->
+    <div class="slide">
+      <img src="DSC_9067.JPG" alt="DSC_9067">
+      <div class="slide-description">
+        <div><strong>Realizacja:</strong> Fotografia krajobrazowa</div>
+        <div><strong>Model:</strong> -</div>
+        <div><strong>Aparat:</strong> Canon EOS R</div>
+      </div>
     </div>
   </div>
-  <div id="o-mnie" class="section">
-    <h3>O mnie</h3>
-    <p>Treść sekcji "O mnie".</p>
+
+  <!-- Sekcja O mnie (overlay) -->
+  <div id="omnie" class="overlay">
+    <div class="overlay-content">
+      <span class="close" onclick="closeOverlay()">X</span>
+      <h2>O mnie</h2>
+      <div id="omnie-content">
+        <!-- Miejsce na zdjęcie – zmień src na własne zdjęcie -->
+        <img src="o_mnie.jpg" alt="O mnie">
+        <p>
+          Cześć! Nazywam się Szymon Grzeszczak i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy. Moja pasja przekłada się na każdy projekt, który realizuję.
+        </p>
+      </div>
+    </div>
   </div>
-  <div id="kontakt" class="section">
-    <h3>Kontakt</h3>
-    <p>Treść sekcji "Kontakt".</p>
-  </div>
-  <div id="galeria" class="section">
-    <h3>Galeria</h3>
-    <p>Treść sekcji "Galeria".</p>
+
+  <!-- Sekcja Kontakt (overlay) -->
+  <div id="kontakt" class="overlay">
+    <div class="overlay-content">
+      <span class="close" onclick="closeOverlay()">X</span>
+      <h2>Kontakt</h2>
+      <div class="kontakt-columns">
+        <!-- Kolumna 1: Email -->
+        <div class="kontakt-column">
+          <h3>E-mail</h3>
+          <p>kontakt@sgmedia.pl</p>
+        </div>
+        <!-- Kolumna 2: Social media -->
+        <div class="kontakt-column">
+          <h3>Social Media</h3>
+          <p>Instagram<br>Facebook<br>YouTube<br>TikTok</p>
+        </div>
+        <!-- Kolumna 3: Mapa Wrocławia (Google Maps embed) -->
+        <div class="kontakt-column">
+          <h3>Mapa Wrocławia</h3>
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10015.37636258273!2d17.032936769226204!3d51.107885399999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fc36d0b5a4b2b%3A0x400c43f0b5a4b0!2sWroc%C5%82aw%2C%20Polska!5e0!3m2!1spl!2s!4v1590000000000!5m2!1spl!2s" 
+            allowfullscreen="" 
+            aria-hidden="false" 
+            tabindex="0">
+          </iframe>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
-    // Tablica mediów - upewnij się, że ścieżki są poprawne!
-    const media = [
-      { type: 'image', src: 'images/image1.jpg' }, // Zmień na swoje ścieżki
-      { type: 'video', src: 'videos/video1.mp4' }  // Zmień na swoje ścieżki
-    ];
-
-    let currentIndex = 0;
-    const mediaContainer = document.getElementById('media-container');
-
-    // Funkcja wyświetlająca medium
-    function showMedia(index) {
-      const item = media[index];
-      mediaContainer.innerHTML = ''; // Czyścimy kontener
-      if (item.type === 'image') {
-        const img = document.createElement('img');
-        img.src = item.src;
-        mediaContainer.appendChild(img);
-      } else if (item.type === 'video') {
-        const video = document.createElement('video');
-        video.src = item.src;
-        video.autoplay = true;
-        video.loop = true;
-        video.muted = true;
-        mediaContainer.appendChild(video);
-      }
+    // Funkcje do wyświetlania i ukrywania overlay (sekcji O mnie i Kontakt)
+    function showOverlay(id) {
+      // Ukrywa slider (zdjęcie i opis)
+      document.getElementById("slider").classList.add("hidden");
+      // Pokazuje odpowiedni overlay
+      document.getElementById(id).classList.add("active");
     }
-
-    // Wyświetlamy pierwsze medium
-    showMedia(currentIndex);
-
-    // Zdarzenie kliknięcia do zmiany mediów
-    mediaContainer.addEventListener('click', function() {
-      currentIndex = (currentIndex + 1) % media.length;
-      showMedia(currentIndex);
-    });
-
-    // Funkcja otwierająca sekcje
-    function openSection(sectionId) {
-      const sections = document.querySelectorAll('.section');
-      sections.forEach(section => section.style.display = 'none'); // Ukrywamy wszystkie
-      document.getElementById(sectionId).style.display = 'block'; // Pokazujemy wybraną
+    function closeOverlay() {
+      // Przywraca slider
+      document.getElementById("slider").classList.remove("hidden");
+      document.getElementById("omnie").classList.remove("active");
+      document.getElementById("kontakt").classList.remove("active");
     }
   </script>
+
 </body>
 </html>
