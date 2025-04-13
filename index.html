@@ -22,7 +22,7 @@
       to { opacity: 1; }
     }
 
-    /* Nagłówek i menu */
+    /* Nagłówek (logo) */
     header {
       padding: 10px 20px;
       text-align: left;
@@ -34,15 +34,20 @@
     .logo-sub {
       font-size: 1.2rem;
     }
+
+    /* Menu */
     nav {
       padding: 10px 20px;
     }
     nav ul {
       list-style: none;
-      padding: 0;
       margin: 0;
+      padding: 0;
       display: flex;
       gap: 20px;
+    }
+    nav ul li {
+      position: relative;
     }
     nav ul li a {
       color: #fff;
@@ -50,26 +55,27 @@
       position: relative;
       padding-bottom: 2px;
     }
+    /* Podkreślenie – domyślnie ukryte, pojawia się dopiero przy hover */
     nav ul li a::after {
       content: "";
       position: absolute;
       bottom: 0;
-      left: -100%;
+      left: 0;
+      transform: translateX(-100%);
       width: 100%;
       height: 2px;
       background: #fff;
-      transition: left 0.3s;
+      transition: transform 0.3s ease;
     }
     nav ul li a:hover::after {
-      left: 0;
+      transform: translateX(0);
     }
 
-    /* Slider – tylko jedno zdjęcie widoczne naraz */
+    /* Slider – wyświetlany jest tylko jeden slajd na raz */
     .slider {
       position: relative;
       width: 100%;
       height: 80vh;
-      margin: 0 auto;
       overflow: hidden;
     }
     .slide {
@@ -80,8 +86,12 @@
       left: 0;
       opacity: 0;
       animation: fade 50s infinite ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
-    /* Każdy slajd otrzymuje odpowiednie opóźnienie, by pokazać się po kolei */
+    /* Ustawiamy opóźnienia dla kolejnych slajdów */
     .slide:nth-child(1) { animation-delay: 0s; }
     .slide:nth-child(2) { animation-delay: 5s; }
     .slide:nth-child(3) { animation-delay: 10s; }
@@ -100,14 +110,15 @@
       25% { opacity: 0; }
       100% { opacity: 0; }
     }
-
-    /* Każdy slajd – zdjęcie + opis przyklejony do dolnej ramki */
+    
+    /* Zdjęcie – pełna widoczność (bez przycinania) */
     .slide img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain; /* Zapewnia wyświetlenie całego zdjęcia */
       display: block;
     }
+    /* Opis zdjęcia przyklejony do dolnej ramki slidera */
     .slide-description {
       position: absolute;
       bottom: 0;
@@ -121,7 +132,44 @@
     }
     .slide-description div { text-align: center; }
 
-    /* Overlay sekcje (O mnie oraz Kontakt) */
+    /* Overlay do pełnego podglądu zdjęcia po kliknięciu */
+    .img-preview-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1500;
+    }
+    .img-preview-overlay.active {
+      display: flex;
+    }
+    .img-preview-content {
+      max-width: 90%;
+      max-height: 90%;
+      overflow: auto;
+    }
+    .img-preview-content img {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
+    .img-preview-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1600;
+    }
+
+    /* Overlay sekcji O mnie i Kontakt */
     .overlay {
       position: fixed;
       top: 0;
@@ -152,17 +200,18 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
-    /* Przykładowa animacja "miksowania" liter – efekt do dalszego rozwinięcia */
+    /* Przykładowa animacja miksowania liter */
     @keyframes scramble {
       0% { opacity: 0.5; letter-spacing: 2px; }
       100% { opacity: 1; letter-spacing: normal; }
     }
 
-    /* Sekcja O mnie – dodane miejsce na zdjęcie */
+    /* Sekcja O mnie – miejsce na zdjęcie obok tekstu */
     #omnie-content {
       display: flex;
       gap: 20px;
       flex-wrap: wrap;
+      align-items: center;
     }
     #omnie-content img {
       max-width: 200px;
@@ -191,8 +240,25 @@
       filter: grayscale(100%);
     }
     
-    /* Ukrywanie slidera, gdy aktywny overlay */
+    /* Ukrywanie slidera, gdy aktywny overlay (O mnie lub Kontakt) */
     .hidden { display: none; }
+    
+    /* Styl dla ziarenek piasku */
+    .sand {
+      position: fixed;
+      top: -10px;
+      width: 8px;
+      height: 8px;
+      background: #fff;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: fall 3s linear forwards;
+      z-index: 2000;
+    }
+    @keyframes fall {
+      0% { top: -10px; opacity: 1; }
+      100% { top: calc(100vh - 8px); opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -212,10 +278,10 @@
     </ul>
   </nav>
 
-  <!-- Slider (strona główna z jednym zdjęciem naraz) -->
+  <!-- Slider – wyświetlany tylko jeden slajd na raz -->
   <div id="slider" class="slider">
     <!-- Slajd 1 -->
-    <div class="slide">
+    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
       <img src="DSC_8911.JPG" alt="DSC_8911">
       <div class="slide-description">
         <div><strong>Realizacja:</strong> Portret nocny</div>
@@ -224,7 +290,7 @@
       </div>
     </div>
     <!-- Slajd 2 -->
-    <div class="slide">
+    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
       <img src="DSC_8932.JPG" alt="DSC_8932">
       <div class="slide-description">
         <div><strong>Realizacja:</strong> Industrial</div>
@@ -233,7 +299,7 @@
       </div>
     </div>
     <!-- Slajd 3 -->
-    <div class="slide">
+    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
       <img src="DSC_8971.JPG" alt="DSC_8971">
       <div class="slide-description">
         <div><strong>Realizacja:</strong> Plener leśny</div>
@@ -242,7 +308,7 @@
       </div>
     </div>
     <!-- Slajd 4 -->
-    <div class="slide">
+    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
       <img src="DSC_8983.JPG" alt="DSC_8983">
       <div class="slide-description">
         <div><strong>Realizacja:</strong> Architektura</div>
@@ -251,7 +317,7 @@
       </div>
     </div>
     <!-- Slajd 5 -->
-    <div class="slide">
+    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
       <img src="DSC_8988.JPG" alt="DSC_8988">
       <div class="slide-description">
         <div><strong>Realizacja:</strong> Portret studyjny</div>
@@ -260,7 +326,7 @@
       </div>
     </div>
     <!-- Slajd 6 -->
-    <div class="slide">
+    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
       <img src="DSC_9035.JPG" alt="DSC_9035">
       <div class="slide-description">
         <div><strong>Realizacja:</strong> Reportaż uliczny</div>
@@ -269,7 +335,7 @@
       </div>
     </div>
     <!-- Slajd 7 -->
-    <div class="slide">
+    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
       <img src="DSC_9038.JPG" alt="DSC_9038">
       <div class="slide-description">
         <div><strong>Realizacja:</strong> Moda uliczna</div>
@@ -278,7 +344,7 @@
       </div>
     </div>
     <!-- Slajd 8 -->
-    <div class="slide">
+    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
       <img src="DSC_9048.JPG" alt="DSC_9048">
       <div class="slide-description">
         <div><strong>Realizacja:</strong> Reportaż eventowy</div>
@@ -287,7 +353,7 @@
       </div>
     </div>
     <!-- Slajd 9 -->
-    <div class="slide">
+    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
       <img src="DSC_9057.JPG" alt="DSC_9057">
       <div class="slide-description">
         <div><strong>Realizacja:</strong> Sesja plenerowa</div>
@@ -296,7 +362,7 @@
       </div>
     </div>
     <!-- Slajd 10 -->
-    <div class="slide">
+    <div class="slide" onclick="showImagePreview(this.querySelector('img').src)">
       <img src="DSC_9067.JPG" alt="DSC_9067">
       <div class="slide-description">
         <div><strong>Realizacja:</strong> Fotografia krajobrazowa</div>
@@ -306,13 +372,20 @@
     </div>
   </div>
 
-  <!-- Sekcja O mnie (overlay) -->
+  <!-- Overlay do podglądu pełnego zdjęcia (przewijalne) -->
+  <div id="imgPreviewOverlay" class="img-preview-overlay">
+    <div class="img-preview-close" onclick="closeImagePreview()">X</div>
+    <div class="img-preview-content" id="imgPreviewContent">
+      <!-- Zdjęcie zostanie wstawione przez JS -->
+    </div>
+  </div>
+
+  <!-- Overlay sekcji O mnie -->
   <div id="omnie" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
       <h2>O mnie</h2>
       <div id="omnie-content">
-        <!-- Miejsce na zdjęcie – zmień src na własne zdjęcie -->
         <img src="o_mnie.jpg" alt="O mnie">
         <p>
           Cześć! Nazywam się Szymon Grzeszczak i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy. Moja pasja przekłada się na każdy projekt, który realizuję.
@@ -321,23 +394,20 @@
     </div>
   </div>
 
-  <!-- Sekcja Kontakt (overlay) -->
+  <!-- Overlay sekcji Kontakt -->
   <div id="kontakt" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
       <h2>Kontakt</h2>
       <div class="kontakt-columns">
-        <!-- Kolumna 1: Email -->
         <div class="kontakt-column">
           <h3>E-mail</h3>
           <p>kontakt@sgmedia.pl</p>
         </div>
-        <!-- Kolumna 2: Social media -->
         <div class="kontakt-column">
           <h3>Social Media</h3>
           <p>Instagram<br>Facebook<br>YouTube<br>TikTok</p>
         </div>
-        <!-- Kolumna 3: Mapa Wrocławia (Google Maps embed) -->
         <div class="kontakt-column">
           <h3>Mapa Wrocławia</h3>
           <iframe 
@@ -351,21 +421,71 @@
     </div>
   </div>
 
+  <!-- Kontener dla efektu spadających ziaren piasku -->
+  <div id="sand-container"></div>
+
   <script>
-    // Funkcje do wyświetlania i ukrywania overlay (sekcji O mnie i Kontakt)
+    /* Funkcje dla overlay sekcji O mnie / Kontakt */
     function showOverlay(id) {
-      // Ukrywa slider (zdjęcie i opis)
       document.getElementById("slider").classList.add("hidden");
-      // Pokazuje odpowiedni overlay
       document.getElementById(id).classList.add("active");
     }
     function closeOverlay() {
-      // Przywraca slider
       document.getElementById("slider").classList.remove("hidden");
       document.getElementById("omnie").classList.remove("active");
       document.getElementById("kontakt").classList.remove("active");
     }
-  </script>
 
+    /* Funkcja podglądu pełnego zdjęcia – kliknięcie na slajd */
+    function showImagePreview(src) {
+      const previewOverlay = document.getElementById("imgPreviewOverlay");
+      const previewContent = document.getElementById("imgPreviewContent");
+      previewContent.innerHTML = '<img src="'+src+'" alt="Podgląd zdjęcia">';
+      previewOverlay.classList.add("active");
+    }
+    function closeImagePreview() {
+      document.getElementById("imgPreviewOverlay").classList.remove("active");
+    }
+
+    /* Inicjacja efektu spadającego piasku po 30s bez aktywności */
+    let inactivityTimer;
+    let sandInterval;
+    const inactivityDelay = 30000; // 30 sekund
+
+    function resetInactivityTimer() {
+      if (sandInterval) {
+        clearInterval(sandInterval);
+        sandInterval = null;
+        const sandContainer = document.getElementById("sand-container");
+        sandContainer.innerHTML = "";
+      }
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(startSandEffect, inactivityDelay);
+    }
+
+    function startSandEffect() {
+      sandInterval = setInterval(spawnSandGrains, 1000); // co sekundę
+    }
+
+    function spawnSandGrains() {
+      const sandContainer = document.getElementById("sand-container");
+      for (let i = 0; i < 3; i++) {
+        const grain = document.createElement("div");
+        grain.className = "sand";
+        // Losowy poziomy offset wokół środka ekranu (±100px od 50%)
+        const offset = Math.random() * 200 - 100;
+        grain.style.left = `calc(50% + ${offset}px)`;
+        sandContainer.appendChild(grain);
+        // Opcjonalnie: po animacji można usunąć ziarenko, jeśli chcesz ograniczyć ich liczbę
+        setTimeout(() => {
+          // grain.remove();
+        }, 3000);
+      }
+    }
+
+    document.addEventListener("mousemove", resetInactivityTimer);
+    document.addEventListener("keydown", resetInactivityTimer);
+    resetInactivityTimer();
+  </script>
 </body>
 </html>
