@@ -19,7 +19,6 @@
       left: 10px;
       text-align: left;
       z-index: 2;
-      transition: transform 0.5s ease-out, opacity 0.5s ease-out;
     }
     .header h1, .header h2 {
       margin: 0;
@@ -33,7 +32,6 @@
       top: 50%;
       transform: translateY(-50%);
       z-index: 2;
-      transition: transform 0.5s ease-out, opacity 0.5s ease-out;
     }
     .menu a {
       display: block;
@@ -52,10 +50,7 @@
       left: 150px;
       padding: 20px;
       overflow: hidden;
-      transition: opacity 0.3s ease-out;
-    }
-    .gallery.slide-out {
-      opacity: 0;
+      background: #333;
     }
     #media-container {
       position: absolute;
@@ -63,15 +58,14 @@
       right: 0;
       bottom: 0;
       left: 0;
-      overflow: hidden; /* Zapobiega wyjeżdżaniu zdjęć i filmów */
     }
     #media-container img, #media-container video {
       position: absolute;
       top: 0;
-      right: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Wypełnia kontener bez zniekształceń */
+      object-fit: contain;
     }
     #media-container video { pointer-events: none; }
     .meta-bar {
