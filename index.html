@@ -21,25 +21,26 @@
       from { opacity: 0; }
       to { opacity: 1; }
     }
-    
+
     /* Nagłówek i menu */
     header {
       padding: 10px 20px;
-      text-align: left;
-      z-index: 1100;
       position: relative;
+      z-index: 1100;
     }
     .logo {
       font-size: 2rem;
       font-weight: bold;
+      /* Modernistyczny font tylko dla tego napisu */
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
     .logo-sub {
       font-size: 1.2rem;
     }
     nav {
       padding: 10px 20px;
-      z-index: 1100;
       position: relative;
+      z-index: 1100;
     }
     nav ul {
       list-style: none;
@@ -48,12 +49,15 @@
       display: flex;
       gap: 20px;
     }
+    nav ul li {
+      position: relative;
+    }
     nav ul li a {
       color: #fff;
       text-decoration: none;
       position: relative;
-      /* Brak widocznego podkreślenia domyślnie */
     }
+    /* Podkreślenie – domyślnie niewidoczne */
     nav ul li a::after {
       content: "";
       position: absolute;
@@ -70,45 +74,76 @@
       opacity: 1;
       transform: translateX(0);
     }
-    
-    /* Slider – umieszczony w prawym górnym rogu */
+
+    /* Slider – obraz wyświetlany od prawego górnego rogu, o standardowym rozmiarze */
     #slider {
       position: fixed;
       top: 0;
       right: 0;
-      width: 800px;   /* Standardowy rozmiar zdjęcia – możesz dostosować */
-      height: 500px;
+      /* Ustalony rozmiar – zmodyfikuj według oryginalnych proporcji zdjęć */
+      width: 800px;
+      /* Wysokość ustawiamy tak, aby zdjęcie kończyło się tuż nad opisem – opis ma stałą wysokość np. 60px */
+      height: calc(100vh - 60px);
       background: #000;
       cursor: pointer;
       z-index: 100;
+      overflow: hidden;
       display: flex;
       align-items: flex-start;
-      justify-content: flex-end;  /* Obraz wyrównany do prawej */
+      justify-content: flex-end;
     }
-    /* Ukazujemy tylko jeden obraz – bez animacji przejścia */
     #slider img {
       width: 100%;
       height: 100%;
       object-fit: contain;
       display: block;
+      /* Gwarantuje przyleganie do prawej ścianki – obraz wyrównany do prawej */
     }
-    
-    /* Opis zdjęcia – przyklejony do dolnej ramki strony */
+
+    /* Opis zdjęcia – przyklejony do dolnej ramki strony (cały width) */
     #description {
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
+      height: 60px;
       background: rgba(0, 0, 0, 0.9);
       padding: 10px 0;
       font-size: 1.2rem;
       display: flex;
       justify-content: space-around;
+      align-items: center;
       z-index: 110;
     }
     #description div { text-align: center; }
-    
-    /* Overlay sekcji O mnie i Kontakt – pozostają bez zmian */
+
+    /* Animacja efektu "hakerskiego miksowania liter" – przykładowa animacja */
+    .scramble {
+      animation: scramble 1.5s steps(20) forwards;
+    }
+    @keyframes scramble {
+      0% { opacity: 0.2; letter-spacing: 5px; }
+      100% { opacity: 1; letter-spacing: normal; }
+    }
+
+    /* Po zmianie zdjęcia – przy dolnych podpisach można dodać klasę scramble */
+    .scramble-delay {
+      animation: scramble 1.5s steps(20) forwards;
+    }
+
+    /* Dodatkowy element – białe kółko w lewym dolnym rogu zdjęcia */
+    #slider .corner-circle {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      z-index: 105;
+    }
+
+    /* Overlay sekcji O mnie i Kontakt – pozostałe elementy */
     .overlay {
       position: fixed;
       top: 0;
@@ -121,9 +156,7 @@
       align-items: center;
       justify-content: center;
     }
-    .overlay.active {
-      display: flex;
-    }
+    .overlay.active { display: flex; }
     .overlay-content {
       background: #000;
       padding: 20px;
@@ -139,12 +172,7 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
-    @keyframes scramble {
-      0% { opacity: 0.5; letter-spacing: 2px; }
-      100% { opacity: 1; letter-spacing: normal; }
-    }
-    
-    /* Sekcja O mnie – miejsce na zdjęcie i tekst */
+    /* Sekcja O mnie – miejsce na zdjęcie */
     #omnie-content {
       display: flex;
       gap: 20px;
@@ -157,7 +185,6 @@
       height: auto;
     }
     #omnie-content p { flex: 1; }
-    
     /* Sekcja Kontakt – trzy kolumny */
     .kontakt-columns {
       display: flex;
@@ -175,8 +202,8 @@
       border: 0;
       filter: grayscale(100%);
     }
-    
-    /* Efekt ziarenek piasku */
+
+    /* Efekt ziarenka – jedno ziarenko co 0.3 sekundy, spadające w dół i zbierające się u dołu */
     .sand {
       position: fixed;
       top: -10px;
@@ -196,9 +223,9 @@
 </head>
 <body>
 
-  <!-- Nagłówek (logo) oraz menu – pozostają widoczne -->
+  <!-- Nagłówek (logo) i menu – nie znikają przy otwieraniu overlay -->
   <header>
-    <div class="logo">SGmedia.pl</div>
+    <div class="logo">SG. Media.pl</div>
     <div class="logo-sub">Szymon Grzeszczak</div>
   </header>
   <nav>
@@ -209,12 +236,14 @@
     </ul>
   </nav>
 
-  <!-- Slider – prezentowane jest jedno zdjęcie; kliknięcie przechodzi do kolejnego -->
+  <!-- Slider – wyświetlane jest tylko jedno zdjęcie; kliknięcie przełącza na kolejne -->
   <div id="slider" onclick="nextSlide()">
     <img id="slideImage" src="" alt="Zdjęcie">
+    <!-- Białe kółko w lewym dolnym rogu slidera -->
+    <div class="corner-circle"></div>
   </div>
 
-  <!-- Opis zdjęcia – przyklejony do dolnej ramki -->
+  <!-- Opis zdjęcia – przyklejony do dolnego brzegu strony; przy zmianie zdjęcia pojawia się efekt "miksowania" -->
   <div id="description">
     <div id="desc-real"></div>
     <div id="desc-model"></div>
@@ -225,12 +254,10 @@
   <div id="omnie" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
-      <h2>O mnie</h2>
+      <h2 class="scramble">O mnie</h2>
       <div id="omnie-content">
         <img src="o_mnie.jpg" alt="O mnie">
-        <p>
-          Cześć! Nazywam się Szymon Grzeszczak i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy. Moja pasja przekłada się na każdy projekt, który realizuję.
-        </p>
+        <p class="scramble">Cześć! Nazywam się Szymon Grzeszczak i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy. Moja pasja przekłada się na każdy projekt.</p>
       </div>
     </div>
   </div>
@@ -239,15 +266,15 @@
   <div id="kontakt" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
-      <h2>Kontakt</h2>
+      <h2 class="scramble">Kontakt</h2>
       <div class="kontakt-columns">
         <div class="kontakt-column">
           <h3>E-mail</h3>
-          <p>kontakt@sgmedia.pl</p>
+          <p class="scramble">kontakt@sgmedia.pl</p>
         </div>
         <div class="kontakt-column">
           <h3>Social Media</h3>
-          <p>Instagram<br>Facebook<br>YouTube<br>TikTok</p>
+          <p class="scramble">Instagram<br>Facebook<br>YouTube<br>TikTok</p>
         </div>
         <div class="kontakt-column">
           <h3>Mapa Wrocławia</h3>
@@ -259,12 +286,12 @@
       </div>
     </div>
   </div>
-  
-  <!-- Kontener dla efektu ziarenek piasku -->
+
+  <!-- Kontener dla efektu spadającego piasku -->
   <div id="sand-container"></div>
 
   <script>
-    /* Lista slajdów – zmień nazwy plików oraz teksty wg potrzeb */
+    /* Lista slajdów – dostosuj nazwy plików oraz opisy */
     const slides = [
       { src: "DSC_8911.JPG", real: "Portret nocny", model: "Anna K.", aparat: "Nikon D750" },
       { src: "DSC_8932.JPG", real: "Industrial", model: "Kamil T.", aparat: "Sony A7III" },
@@ -278,14 +305,28 @@
       { src: "DSC_9067.JPG", real: "Fotografia krajobrazowa", model: "-", aparat: "Canon EOS R" }
     ];
     let currentSlide = 0;
-    
     function showSlide(index) {
       const slide = slides[index];
       document.getElementById("slideImage").src = slide.src;
-      // Aktualizacja opisu – bez efektu fade, zmiana natychmiastowa
-      document.getElementById("desc-real").innerHTML = `<strong>Realizacja:</strong> ${slide.real}`;
-      document.getElementById("desc-model").innerHTML = `<strong>Model:</strong> ${slide.model}`;
-      document.getElementById("desc-aparat").innerHTML = `<strong>Aparat:</strong> ${slide.aparat}`;
+      // Dla dolnych napisów – resetujemy klasę scramble i po krótkim czasie dodajemy ją, aby zobaczyć efekt "miksowania"
+      const realDiv = document.getElementById("desc-real");
+      const modelDiv = document.getElementById("desc-model");
+      const aparatDiv = document.getElementById("desc-aparat");
+      
+      realDiv.classList.remove("scramble-delay");
+      modelDiv.classList.remove("scramble-delay");
+      aparatDiv.classList.remove("scramble-delay");
+      
+      // Ustaw właściwe teksty (możesz dodać opóźnienie z setTimeout by uruchomić animację)
+      setTimeout(() => {
+        realDiv.innerHTML = `<strong>Realizacja:</strong> ${slide.real}`;
+        modelDiv.innerHTML = `<strong>Model:</strong> ${slide.model}`;
+        aparatDiv.innerHTML = `<strong>Aparat:</strong> ${slide.aparat}`;
+        
+        realDiv.classList.add("scramble-delay");
+        modelDiv.classList.add("scramble-delay");
+        aparatDiv.classList.add("scramble-delay");
+      }, 100); // minimalne opóźnienie, by dodać klasę
     }
     function nextSlide() {
       currentSlide = (currentSlide + 1) % slides.length;
@@ -293,7 +334,7 @@
     }
     // Inicjuj pierwszy slajd
     showSlide(currentSlide);
-    
+
     /* Overlay dla sekcji O mnie / Kontakt */
     function showOverlay(id) {
       document.getElementById("slider").classList.add("hidden");
@@ -304,12 +345,11 @@
       document.getElementById("omnie").classList.remove("active");
       document.getElementById("kontakt").classList.remove("active");
     }
-    
-    /* Efekt spadających ziarenek piasku */
+
+    /* Efekt spadającego piasku – jedno ziarenko co 0.3 sekundy */
     let inactivityTimer;
     let sandInterval;
     const inactivityDelay = 30000; // 30 sekund
-    
     function resetInactivityTimer() {
       if (sandInterval) {
         clearInterval(sandInterval);
@@ -319,30 +359,19 @@
       clearTimeout(inactivityTimer);
       inactivityTimer = setTimeout(startSandEffect, inactivityDelay);
     }
-    
     function startSandEffect() {
-      sandInterval = setInterval(spawnSandGrains, 1000); // co sekundę spadają trzy ziarenka
+      sandInterval = setInterval(spawnSandGrain, 300); // co 0,3 sekundy
     }
-    
-    function spawnSandGrains() {
+    function spawnSandGrain() {
       const sandContainer = document.getElementById("sand-container");
-      for (let i = 0; i < 3; i++) {
-        const grain = document.createElement("div");
-        grain.className = "sand";
-        // Ustal losowy początkowy offset w pobliżu środka (np. 45%-55%)
-        const offset = (Math.random() * 10) + 45;
-        grain.style.left = offset + "%";
-        // Aby uzyskać efekt „grupowania” (podobnego do klepsydry) – ustalamy docelowy offset blisko 50%
-        grain.dataset.targetLeft = (50 + (Math.random()*10 - 5)) + "%";
-        sandContainer.appendChild(grain);
-        
-        // Po zakończeniu animacji (3s) usuń ziarenko (opcjonalnie)
-        setTimeout(() => {
-          grain.remove();
-        }, 3000);
-      }
+      const grain = document.createElement("div");
+      grain.className = "sand";
+      // Ustalamy losowo pozycję startową w pobliżu środka (możesz modyfikować)
+      const offset = (Math.random() * 10) + 45; // między 45% a 55%
+      grain.style.left = offset + "%";
+      sandContainer.appendChild(grain);
+      // Ziarenko się nie usuwa, żeby efekt "zbierania" był widoczny – reset przez ruch myszką usuwa wszystkie
     }
-    
     document.addEventListener("mousemove", resetInactivityTimer);
     document.addEventListener("keydown", resetInactivityTimer);
     resetInactivityTimer();
