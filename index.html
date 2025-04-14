@@ -78,7 +78,7 @@
       top: 0;
       right: 0;
       width: 800px;
-      height: calc(100vh - 60px);
+      height: calc(100vh - 80px);
       background: #000;
       cursor: pointer;
       z-index: 100;
@@ -86,6 +86,7 @@
       display: flex;
       align-items: flex-start;
       justify-content: flex-end;
+      flex-direction: column;
     }
     #slider img {
       width: 100%;
@@ -93,7 +94,7 @@
       object-fit: contain;
       display: block;
     }
-    #slider .corner-circle {
+    .corner-circle {
       position: absolute;
       width: 20px;
       height: 20px;
@@ -101,7 +102,17 @@
       border-radius: 50%;
       bottom: -10px;
       left: -10px;
-      z-index: 150;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    #press-hint {
+      font-size: 0.8rem;
+      color: #fff;
+      padding: 5px 10px;
+      opacity: 0.5;
+      align-self: flex-end;
+      margin-right: 20px;
     }
 
     #description {
@@ -118,7 +129,9 @@
       align-items: center;
       z-index: 110;
     }
-    #description div { text-align: center; }
+    #description div {
+      text-align: center;
+    }
 
     .overlay {
       position: fixed;
@@ -133,13 +146,15 @@
       justify-content: center;
     }
     .overlay.active { display: flex; }
+
     .overlay-content {
       background: #000;
       padding: 20px;
-      max-width: 600px;
+      max-width: 900px;
       width: 90%;
       position: relative;
     }
+
     .close {
       position: absolute;
       top: -30px;
@@ -150,23 +165,26 @@
 
     #omnie-content {
       display: flex;
-      flex-direction: column;
-      gap: 15px;
+      flex-direction: row;
+      gap: 30px;
       align-items: center;
-      text-align: center;
+      justify-content: center;
+      text-align: left;
     }
     #omnie-content img {
-      max-width: 200px;
+      max-width: 240px;
       width: 100%;
-      height: auto;
+      border-radius: 20px;
+      object-fit: cover;
+    }
+    #omnie-text {
+      font-size: 1rem;
+      line-height: 1.6;
     }
     #omnie-text strong {
       font-size: 1.5rem;
       display: block;
       margin-bottom: 10px;
-    }
-    #omnie-text span {
-      font-size: 1rem;
     }
 
     .kontakt-columns {
@@ -204,6 +222,10 @@
       z-index: 1500;
       pointer-events: none;
     }
+
+    .scramble span.dud {
+      opacity: 0.3;
+    }
   </style>
 </head>
 <body>
@@ -223,12 +245,13 @@
   <div id="slider">
     <img id="slideImage" src="" alt="Zdjęcie">
     <div class="corner-circle"></div>
+    <div id="press-hint">Press on photo</div>
   </div>
 
   <div id="description">
-    <div id="desc-real"></div>
-    <div id="desc-model"></div>
-    <div id="desc-aparat"></div>
+    <div id="desc-real" class="scramble"></div>
+    <div id="desc-model" class="scramble"></div>
+    <div id="desc-aparat" class="scramble"></div>
   </div>
 
   <!-- Overlay O mnie -->
@@ -237,10 +260,10 @@
       <span class="close" onclick="closeOverlay()">X</span>
       <div id="omnie-content">
         <img src="o_mnie.jpg" alt="O mnie">
-        <p id="omnie-text">
+        <div id="omnie-text">
           <strong>Nazywam się Szymon Grzeszczak</strong>
           <span>i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy. Moja pasja przekłada się na każdy projekt.</span>
-        </p>
+        </div>
       </div>
     </div>
   </div>
@@ -251,15 +274,15 @@
       <span class="close" onclick="closeOverlay()">X</span>
       <div class="kontakt-columns">
         <div class="kontakt-column">
-          <p id="email-text"></p>
+          <p id="email-text" class="scramble"></p>
         </div>
         <div class="kontakt-column">
-          <p id="socials-text">
-            <a href="https://www.instagram.com" target="_blank">Instagram</a>
-            <a href="https://www.facebook.com" target="_blank">Facebook</a>
-            <a href="https://www.youtube.com" target="_blank">YouTube</a>
-            <a href="https://www.tiktok.com" target="_blank">TikTok</a>
-          </p>
+          <div id="socials-text">
+            <a class="scramble" href="https://www.instagram.com" target="_blank">Instagram</a>
+            <a class="scramble" href="https://www.facebook.com" target="_blank">Facebook</a>
+            <a class="scramble" href="https://www.youtube.com" target="_blank">YouTube</a>
+            <a class="scramble" href="https://www.tiktok.com" target="_blank">TikTok</a>
+          </div>
         </div>
         <div class="kontakt-column">
           <iframe 
@@ -331,22 +354,19 @@
   const slides = [
     {
       src: "DSC_8911.JPG",
-      model: "Magda R.",
-      real: "Realizator: Szymon Grzeszczak",
+      model: "magda.r",
+      real: "szymon.grzeszczak",
       aparat: "Aparat: Nikon D300",
-      insta: "https://instagram.com/magda_r"
+      instaModel: "https://instagram.com/magda.r",
+      instaReal: "https://instagram.com/szymon.grzeszczak"
     },
     {
       src: "DSC_8983.JPG",
-      model: "Tomek P.",
-      real: "Realizator: Szymon Grzeszczak",
-      aparat: "Aparat: Nikon D300"
-    },
-    {
-      src: "DSC_9057.JPG",
-      model: "Karolina D.",
-      real: "Realizator: Szymon Grzeszczak",
-      aparat: "Aparat: Nikon D300"
+      model: "karolina.d",
+      real: "szymon.grzeszczak",
+      aparat: "Aparat: Nikon D300",
+      instaModel: "https://instagram.com/karolina.d",
+      instaReal: "https://instagram.com/szymon.grzeszczak"
     }
   ];
 
@@ -354,6 +374,7 @@
   const realDiv = document.getElementById("desc-real");
   const modelDiv = document.getElementById("desc-model");
   const aparatDiv = document.getElementById("desc-aparat");
+
   const fxReal = new TextScramble(realDiv);
   const fxModel = new TextScramble(modelDiv);
   const fxAparat = new TextScramble(aparatDiv);
@@ -361,15 +382,15 @@
   function showSlide(index) {
     const slide = slides[index];
     document.getElementById("slideImage").src = slide.src;
-    fxReal.setText(slide.real);
-    fxAparat.setText(slide.aparat);
 
-    if (slide.insta) {
-      fxModel.setText(`@${slide.model}`);
-      modelDiv.innerHTML = `<a href="${slide.insta}" target="_blank" style="text-decoration: none; border-bottom: 2px solid transparent;" onmouseover="this.style.borderColor='#fff'" onmouseout="this.style.borderColor='transparent'">@${slide.model}</a>`;
-    } else {
-      fxModel.setText(`Model: ${slide.model}`);
-    }
+    // Model as @link
+    modelDiv.innerHTML = `<a href="${slide.instaModel}" target="_blank" style="text-decoration:none; border-bottom: 2px solid transparent;" onmouseover="this.style.borderColor='#fff'" onmouseout="this.style.borderColor='transparent'">@${slide.model}</a>`;
+
+    // Realizator as @link
+    realDiv.innerHTML = `<a href="${slide.instaReal}" target="_blank" style="text-decoration:none; border-bottom: 2px solid transparent;" onmouseover="this.style.borderColor='#fff'" onmouseout="this.style.borderColor='transparent'">@${slide.real}</a>`;
+
+    // Aparat with scramble
+    fxAparat.setText(slide.aparat);
   }
 
   function nextSlide() {
@@ -384,15 +405,16 @@
     document.getElementById(id).classList.add("active");
 
     if (id === 'omnie') {
-      const p = document.getElementById("omnie-text");
-      const fx = new TextScramble(p);
-      fx.setText("Nazywam się Szymon Grzeszczak i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy.");
+      new TextScramble(document.getElementById("omnie-text")).setText(
+        "Nazywam się Szymon Grzeszczak i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy."
+      );
     }
 
     if (id === 'kontakt') {
-      const email = document.getElementById("email-text");
-      const fxEmail = new TextScramble(email);
-      fxEmail.setText("kontakt@lgmedia.pl");
+      new TextScramble(document.getElementById("email-text")).setText("kontakt@lgmedia.pl");
+      document.querySelectorAll("#socials-text a").forEach(link => {
+        new TextScramble(link).setText(link.innerText);
+      });
     }
   }
 
@@ -402,78 +424,84 @@
     document.getElementById("kontakt").classList.remove("active");
   }
 
-  // Kliknięcie w tło całej strony zmienia zdjęcie
-  document.body.addEventListener("click", (e) => {
-    if (!e.target.closest('.overlay') && !e.target.closest('nav')) {
-      nextSlide();
-    }
+  // Zmiana zdjęcia tylko przy kliknięciu w slider
+  document.getElementById("slider").addEventListener("click", () => {
+    nextSlide();
   });
 </script>
 <script>
   const canvas = document.getElementById("sandCanvas");
   const ctx = canvas.getContext("2d");
   let grains = [];
-  let inactiveTimer, spawnInterval;
 
-  function Grain(x) {
-    this.x = x;
-    this.y = -5;
-    this.radius = 2;
-    this.vx = (Math.random() - 0.5) * 1.5;
-    this.vy = 1 + Math.random() * 2;
-    this.settled = false;
-  }
-
-  Grain.prototype.update = function () {
-    // Grawitacja w dół i do środka
-    const centerX = canvas.width / 2;
-    const dx = centerX - this.x;
-    this.vx += dx * 0.0005;
-    this.vy += 0.05;
-
-    this.x += this.vx;
-    this.y += this.vy;
-
-    // Odbicie od dołu
-    if (this.y + this.radius > canvas.height) {
-      this.y = canvas.height - this.radius;
-      this.vy *= -0.3;
-      this.vx *= 0.5;
+  class Grain {
+    constructor(x) {
+      this.x = x;
+      this.y = -5;
+      this.radius = 2;
+      this.vx = (Math.random() - 0.5) * 1.2;
+      this.vy = 1 + Math.random();
+      this.settled = false;
     }
 
-    // Odbicie od boków
-    if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) {
-      this.vx *= -1;
+    update(grainsBelow) {
+      if (this.settled) return;
+
+      const gravity = 0.2;
+      this.vy += gravity;
+
+      this.x += this.vx;
+      this.y += this.vy;
+
+      if (this.y + this.radius >= canvas.height) {
+        this.y = canvas.height - this.radius;
+        this.settled = true;
+        return;
+      }
+
+      for (let g of grainsBelow) {
+        const dx = this.x - g.x;
+        const dy = this.y - g.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < this.radius * 2) {
+          this.y = g.y - this.radius * 2;
+          this.settled = true;
+          return;
+        }
+      }
     }
-  };
 
-  Grain.prototype.draw = function () {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = "#fff";
-    ctx.fill();
-  };
-
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    grains.forEach(grain => {
-      grain.update();
-      grain.draw();
-    });
-    requestAnimationFrame(animate);
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = "#fff";
+      ctx.fill();
+    }
   }
 
   function spawnGrain() {
-    const centerX = canvas.width / 2;
-    const spread = 150;
-    const x = centerX + (Math.random() - 0.5) * spread;
+    const center = canvas.width / 2;
+    const spread = 200;
+    const x = center + (Math.random() - 0.5) * spread;
     grains.push(new Grain(x));
-    if (grains.length > 1000) grains.shift();
+    if (grains.length > 1500) grains.shift();
   }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < grains.length; i++) {
+      grains[i].update(grains.slice(0, i));
+      grains[i].draw();
+    }
+    requestAnimationFrame(animate);
+  }
+
+  let inactivityTimer = null;
+  let spawnInterval = null;
 
   function startSand() {
     if (!spawnInterval) {
-      spawnInterval = setInterval(spawnGrain, 80);
+      spawnInterval = setInterval(spawnGrain, 60);
       animate();
     }
   }
@@ -485,18 +513,19 @@
   }
 
   function resetInactivity() {
-    clearTimeout(inactiveTimer);
+    clearTimeout(inactivityTimer);
     stopSand();
-    inactiveTimer = setTimeout(startSand, 30000);
+    inactivityTimer = setTimeout(startSand, 30000);
   }
 
   document.addEventListener("mousemove", () => {
-    stopSand(); // wyczyść piasek na poruszenie myszką
+    grains = [];
+    stopSand();
     resetInactivity();
   });
   document.addEventListener("keydown", resetInactivity);
 
-  resetInactivity(); // uruchom licznik na starcie
+  resetInactivity();
 </script>
 </body>
 </html>
