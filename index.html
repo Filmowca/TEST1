@@ -332,7 +332,7 @@
             char = this.randomChar();
             this.queue[i].char = char;
           }
-          output += <span class="dud">${char}</span>;
+          output += `<span class="dud">${char}</span>`;
         } else {
           output += from;
         }
@@ -382,14 +382,14 @@
     const slide = slides[index];
     document.getElementById("slideImage").src = slide.src;
 
-    fxReal.setText(Realizator: @${slide.realName});
-    fxModel.setText(Model: @${slide.modelName});
+    fxReal.setText(`Realizator: @${slide.realName}`);
+    fxModel.setText(`Model: @${slide.modelName}`);
     fxAparat.setText(slide.aparat);
 
     // IG linki – osobno, z efektem hover
-    realDiv.innerHTML = <a href="${slide.realInsta}" target="_blank" style="color:#fff;text-decoration:none;border-bottom:1px solid transparent;" onmouseover="this.style.borderBottom='1px solid white'" onmouseout="this.style.borderBottom='1px solid transparent'">Realizator: @${slide.realName}</a>;
+    realDiv.innerHTML = `<a href="${slide.realInsta}" target="_blank" style="color:#fff;text-decoration:none;border-bottom:1px solid transparent;" onmouseover="this.style.borderBottom='1px solid white'" onmouseout="this.style.borderBottom='1px solid transparent'">Realizator: @${slide.realName}</a>`;
 
-    modelDiv.innerHTML = <a href="${slide.modelInsta}" target="_blank" style="color:#fff;text-decoration:none;border-bottom:1px solid transparent;" onmouseover="this.style.borderBottom='1px solid white'" onmouseout="this.style.borderBottom='1px solid transparent'">Model: @${slide.modelName}</a>;
+    modelDiv.innerHTML = `<a href="${slide.modelInsta}" target="_blank" style="color:#fff;text-decoration:none;border-bottom:1px solid transparent;" onmouseover="this.style.borderBottom='1px solid white'" onmouseout="this.style.borderBottom='1px solid transparent'">Model: @${slide.modelName}</a>`;
   }
 
   function nextSlide() {
@@ -528,3 +528,4 @@
 </script>
 </body>
 </html>
+
