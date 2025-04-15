@@ -21,6 +21,7 @@
       from { opacity: 0; }
       to   { opacity: 1; }
     }
+
     header {
       padding: 20px;
       display: flex;
@@ -38,6 +39,11 @@
     .logo-sub {
       font-size: 1.2rem;
     }
+
+    nav {
+      padding: 10px 20px;
+      z-index: 1100;
+    }
     nav ul {
       list-style: none;
       margin: 0;
@@ -48,11 +54,25 @@
     nav ul li a {
       color: #fff;
       text-decoration: none;
-      border-bottom: 2px solid transparent;
+      position: relative;
     }
-    nav ul li a:hover {
-      border-bottom: 2px solid #fff;
+    nav ul li a::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #fff;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(-100%);
     }
+    nav ul li a:hover::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
     #slider {
       position: fixed;
       top: 0;
@@ -60,6 +80,7 @@
       width: 800px;
       height: calc(100vh - 80px);
       background: #000;
+      cursor: pointer;
       z-index: 100;
       overflow: hidden;
       display: flex;
@@ -72,24 +93,20 @@
       object-fit: contain;
       display: block;
     }
+
     #press-hint {
       position: absolute;
       left: -40px;
       top: 50%;
       transform: rotate(-90deg) translateY(-50%);
       transform-origin: left center;
-      font-size: 1rem;
-      font-weight: bold;
+      font-size: 0.8rem;
       color: #fff;
-      opacity: 0.8;
+      opacity: 0.6;
       white-space: nowrap;
       z-index: 2000;
-      animation: scramble 1.5s steps(20) forwards;
     }
-    @keyframes scramble {
-      0% { opacity: 0.2; letter-spacing: 5px; }
-      100% { opacity: 1; letter-spacing: normal; }
-    }
+
     #description {
       position: fixed;
       bottom: 0;
@@ -104,18 +121,20 @@
       align-items: center;
       z-index: 110;
     }
+
+    #description div {
+      text-align: center;
+    }
     #description a {
       color: #fff;
       text-decoration: none;
       border-bottom: 1px solid transparent;
-      transition: border-bottom 0.3s;
+      transition: border 0.3s;
     }
     #description a:hover {
       border-bottom: 1px solid #fff;
     }
-    .scramble span.dud {
-      opacity: 0.3;
-    }
+
     .overlay {
       position: fixed;
       top: 0;
@@ -129,6 +148,7 @@
       justify-content: center;
     }
     .overlay.active { display: flex; }
+
     .overlay-content {
       background: #000;
       padding: 20px;
@@ -136,6 +156,7 @@
       width: 90%;
       position: relative;
     }
+
     .close {
       position: absolute;
       top: -30px;
@@ -143,6 +164,31 @@
       font-size: 1.8rem;
       cursor: pointer;
     }
+
+    #omnie-content {
+      display: flex;
+      flex-direction: row;
+      gap: 30px;
+      align-items: center;
+      justify-content: center;
+      text-align: left;
+    }
+    #omnie-content img {
+      max-width: 240px;
+      width: 100%;
+      border-radius: 20px;
+      object-fit: cover;
+    }
+    #omnie-text {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    #omnie-text strong {
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+
     .kontakt-columns {
       display: flex;
       flex-wrap: wrap;
@@ -164,37 +210,24 @@
     .kontakt-column a:hover {
       border-color: #fff;
     }
+
     .kontakt-map {
       width: 100%;
       height: 300px;
       border: none;
       filter: grayscale(100%);
     }
-    #realizuje {
-      font-size: 1.2rem;
-      margin-bottom: 20px;
-    }
-    #realizuje span {
-      display: inline-block;
-      font-weight: bold;
-      color: #fff;
-      animation: scramble 1.5s steps(20) infinite;
-    }
-    #background-effect {
+
+    canvas#sandCanvas {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-      background: linear-gradient(-45deg, #0f0f0f, #1a1a1a, #222, #111);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+      z-index: 1500;
+      pointer-events: none;
     }
-    @keyframes gradientBG {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
+
+    .scramble span.dud {
+      opacity: 0.3;
     }
   </style>
 </head>
@@ -203,6 +236,7 @@
     <div class="logo">SG. Media.pl</div>
     <div class="logo-sub">Szymon Grzeszczak</div>
   </header>
+
   <nav>
     <ul>
       <li><a href="#" onclick="showOverlay('omnie')">O mnie</a></li>
@@ -210,45 +244,287 @@
       <li><a href="https://przyklad.pl/galeria" target="_blank">Galeria</a></li>
     </ul>
   </nav>
-  <div id="slider" onclick="nextSlide()">
+
+  <div id="slider">
     <img id="slideImage" src="" alt="Zdjęcie">
-    <div id="press-hint" class="scramble">Press on Photo</div>
+    <div id="press-hint">Press on photo</div>
   </div>
+
   <div id="description">
-    <div id="desc-real" class="scramble"><a href="https://instagram.com/Szymon_Grzeszczak_Photo" target="_blank">Realizator: @Szymon_Grzeszczak_Photo</a></div>
-    <div id="desc-model" class="scramble"><a href="https://instagram.com/Przyklad" target="_blank">Model: @Przyklad</a></div>
-    <div id="desc-aparat" class="scramble">Aparat: Nikon D300</div>
+    <div id="desc-real" class="scramble"></div>
+    <div id="desc-model" class="scramble"></div>
+    <div id="desc-aparat" class="scramble"></div>
   </div>
+
+  <!-- Overlay: O mnie -->
   <div id="omnie" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
       <div id="omnie-content">
-        <img src="o_mnie.jpg" alt="O mnie" style="max-width: 240px; border-radius: 20px; margin-right: 20px; float: left;">
+        <img src="o_mnie.jpg" alt="O mnie">
         <div id="omnie-text">
           <strong>Nazywam się Szymon Grzeszczak</strong>
-          <p>i zajmuję się fotografią artystyczną. Łączę technikę z emocjami...</p>
+          <span>i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy. Moja pasja przekłada się na każdy projekt.</span>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Overlay: Kontakt -->
   <div id="kontakt" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
-      <div id="realizuje">Realizuję: <span id="realizuje-text">Foto</span></div>
       <div class="kontakt-columns">
         <div class="kontakt-column">
-          <p id="email-text" class="scramble">kontakt@lgmedia.pl</p>
+          <p id="email-text" class="scramble"></p>
         </div>
-        <div class="kontakt-column" id="socials-text">
-          <a class="scramble" href="https://instagram.com" target="_blank">Instagram</a>
-          <a class="scramble" href="https://facebook.com" target="_blank">Facebook</a>
-          <a class="scramble" href="https://youtube.com" target="_blank">YouTube</a>
-          <a class="scramble" href="https://tiktok.com" target="_blank">TikTok</a>
+        <div class="kontakt-column">
+          <div id="socials-text">
+            <a class="scramble" href="https://www.instagram.com" target="_blank">Instagram</a>
+            <a class="scramble" href="https://www.facebook.com" target="_blank">Facebook</a>
+            <a class="scramble" href="https://www.youtube.com" target="_blank">YouTube</a>
+            <a class="scramble" href="https://www.tiktok.com" target="_blank">TikTok</a>
+          </div>
         </div>
       </div>
-      <iframe class="kontakt-map" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d19548.238345632435!2d17.038538!3d51.107885!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fc3e0f29f84c3%3A0x78c9b935b21b06ae!2sWroc%C5%82aw!5e0!3m2!1spl!2spl!4v1713140000000!5m2!1spl!2spl" allowfullscreen="" loading="lazy"></iframe>
+      <iframe class="kontakt-map"
+        src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d19548.238345632435!2d17.038538!3d51.107885!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fc3e0f29f84c3%3A0x78c9b935b21b06ae!2sWroc%C5%82aw!5e0!3m2!1spl!2spl!4v1713140000000!5m2!1spl!2spl"
+        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
     </div>
   </div>
-  <div id="background-effect"></div>
+
+  <canvas id="sandCanvas" width="1920" height="1080"></canvas>
+<script>
+  class TextScramble {
+    constructor(el) {
+      this.el = el;
+      this.chars = '!<>-_\\/[]{}—=+*^?#________';
+      this.update = this.update.bind(this);
+    }
+    setText(newText) {
+      const oldText = this.el.innerText;
+      const length = Math.max(oldText.length, newText.length);
+      const promise = new Promise(resolve => this.resolve = resolve);
+      this.queue = [];
+      for (let i = 0; i < length; i++) {
+        const from = oldText[i] || '';
+        const to = newText[i] || '';
+        const start = Math.floor(Math.random() * 40);
+        const end = start + Math.floor(Math.random() * 40);
+        this.queue.push({ from, to, start, end });
+      }
+      cancelAnimationFrame(this.frameRequest);
+      this.frame = 0;
+      this.update();
+      return promise;
+    }
+    update() {
+      let output = '';
+      let complete = 0;
+      for (let i = 0, n = this.queue.length; i < n; i++) {
+        let { from, to, start, end, char } = this.queue[i];
+        if (this.frame >= end) {
+          complete++;
+          output += to;
+        } else if (this.frame >= start) {
+          if (!char || Math.random() < 0.28) {
+            char = this.randomChar();
+            this.queue[i].char = char;
+          }
+          output += <span class="dud">${char}</span>;
+        } else {
+          output += from;
+        }
+      }
+      this.el.innerHTML = output;
+      if (complete === this.queue.length) {
+        this.resolve();
+      } else {
+        this.frameRequest = requestAnimationFrame(this.update);
+        this.frame++;
+      }
+    }
+    randomChar() {
+      return this.chars[Math.floor(Math.random() * this.chars.length)];
+    }
+  }
+
+  const slides = [
+    {
+      src: "DSC_8911.JPG",
+      modelName: "Przyklad",
+      modelInsta: "https://instagram.com/Przyklad",
+      realName: "Szymon_Grzeszczak_Photo",
+      realInsta: "https://instagram.com/Szymon_Grzeszczak_Photo",
+      aparat: "Aparat: Nikon D300"
+    },
+    {
+      src: "DSC_8983.JPG",
+      modelName: "KarolinaModel",
+      modelInsta: "https://instagram.com/KarolinaModel",
+      realName: "Szymon_Grzeszczak_Photo",
+      realInsta: "https://instagram.com/Szymon_Grzeszczak_Photo",
+      aparat: "Aparat: Canon EOS 5D"
+    }
+  ];
+
+  let currentSlide = 0;
+  const realDiv = document.getElementById("desc-real");
+  const modelDiv = document.getElementById("desc-model");
+  const aparatDiv = document.getElementById("desc-aparat");
+
+  const fxReal = new TextScramble(realDiv);
+  const fxModel = new TextScramble(modelDiv);
+  const fxAparat = new TextScramble(aparatDiv);
+
+  function showSlide(index) {
+    const slide = slides[index];
+    document.getElementById("slideImage").src = slide.src;
+
+    fxReal.setText(Realizator: @${slide.realName});
+    fxModel.setText(Model: @${slide.modelName});
+    fxAparat.setText(slide.aparat);
+
+    // IG linki – osobno, z efektem hover
+    realDiv.innerHTML = <a href="${slide.realInsta}" target="_blank" style="color:#fff;text-decoration:none;border-bottom:1px solid transparent;" onmouseover="this.style.borderBottom='1px solid white'" onmouseout="this.style.borderBottom='1px solid transparent'">Realizator: @${slide.realName}</a>;
+
+    modelDiv.innerHTML = <a href="${slide.modelInsta}" target="_blank" style="color:#fff;text-decoration:none;border-bottom:1px solid transparent;" onmouseover="this.style.borderBottom='1px solid white'" onmouseout="this.style.borderBottom='1px solid transparent'">Model: @${slide.modelName}</a>;
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % slides.length;
+    showSlide(currentSlide);
+  }
+
+  showSlide(currentSlide);
+
+  function showOverlay(id) {
+    document.getElementById("slider").classList.add("hidden");
+    document.getElementById(id).classList.add("active");
+
+    if (id === 'omnie') {
+      new TextScramble(document.getElementById("omnie-text")).setText(
+        "Nazywam się Szymon Grzeszczak i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy."
+      );
+    }
+
+    if (id === 'kontakt') {
+      new TextScramble(document.getElementById("email-text")).setText("kontakt@lgmedia.pl");
+      document.querySelectorAll("#socials-text a").forEach(link => {
+        new TextScramble(link).setText(link.innerText);
+      });
+    }
+  }
+
+  function closeOverlay() {
+    document.getElementById("slider").classList.remove("hidden");
+    document.getElementById("omnie").classList.remove("active");
+    document.getElementById("kontakt").classList.remove("active");
+  }
+
+  // Kliknięcie tylko w slider
+  document.getElementById("slider").addEventListener("click", () => {
+    nextSlide();
+  });
+</script>
+<script>
+  const canvas = document.getElementById("sandCanvas");
+  const ctx = canvas.getContext("2d");
+  let grains = [];
+
+  class Grain {
+    constructor(x) {
+      this.x = x;
+      this.y = -5;
+      this.radius = 2;
+      this.vx = (Math.random() - 0.5) * 1.2;
+      this.vy = 1 + Math.random();
+      this.settled = false;
+    }
+
+    update(grainsBelow) {
+      if (this.settled) return;
+
+      const gravity = 0.2;
+      this.vy += gravity;
+
+      this.x += this.vx;
+      this.y += this.vy;
+
+      if (this.y + this.radius >= canvas.height) {
+        this.y = canvas.height - this.radius;
+        this.settled = true;
+        return;
+      }
+
+      for (let g of grainsBelow) {
+        const dx = this.x - g.x;
+        const dy = this.y - g.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < this.radius * 2) {
+          this.y = g.y - this.radius * 2;
+          this.settled = true;
+          return;
+        }
+      }
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = "#fff";
+      ctx.fill();
+    }
+  }
+
+  function spawnGrain() {
+    const center = canvas.width / 2;
+    const spread = 200;
+    const x = center + (Math.random() - 0.5) * spread;
+    grains.push(new Grain(x));
+    if (grains.length > 1500) grains.shift();
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < grains.length; i++) {
+      grains[i].update(grains.slice(0, i));
+      grains[i].draw();
+    }
+    requestAnimationFrame(animate);
+  }
+
+  let inactivityTimer = null;
+  let spawnInterval = null;
+
+  function startSand() {
+    if (!spawnInterval) {
+      spawnInterval = setInterval(spawnGrain, 60);
+      animate();
+    }
+  }
+
+  function stopSand() {
+    clearInterval(spawnInterval);
+    spawnInterval = null;
+    grains = [];
+  }
+
+  function resetInactivity() {
+    clearTimeout(inactivityTimer);
+    stopSand();
+    inactivityTimer = setTimeout(startSand, 30000);
+  }
+
+  document.addEventListener("mousemove", () => {
+    grains = [];
+    stopSand();
+    resetInactivity();
+  });
+  document.addEventListener("keydown", resetInactivity);
+
+  resetInactivity();
+</script>
 </body>
 </html>
