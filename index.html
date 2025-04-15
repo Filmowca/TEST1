@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preload" as="image" href="DSC_8911.JPG">
+<link rel="preload" as="image" href="DSC_8983.JPG">
+
   <title>SGmedia.pl - Szymon Grzeszczak</title>
   <style>
     * { box-sizing: border-box; }
@@ -251,6 +254,20 @@
       50% { opacity: 0.8; }
       100% { opacity: 0.4; }
     }
+    body.light-mode {
+  background: #fff;
+  color: #000;
+}
+body.light-mode a {
+  color: #000;
+}
+body.light-mode #description {
+  background: rgba(255, 255, 255, 0.9);
+}
+body.light-mode .kontakt-map {
+  filter: grayscale(0%);
+}
+
 
   </style>
 </head>
@@ -258,6 +275,10 @@
   <header>
     <div class="logo">SG. Media.pl</div>
     <div class="logo-sub">Szymon Grzeszczak</div>
+    <button id="toggle-theme" style="margin-top:10px;padding:5px 10px;font-family:monospace;background:#fff;color:#000;border:none;cursor:pointer;border-radius:4px;">
+  Switch Theme
+</button>
+
   </header>
 
   <nav>
@@ -269,7 +290,7 @@
   </nav>
 
   <div id="slider">
-    <img id="slideImage" src="" alt="Zdjęcie">
+   <img id="slideImage" src="" alt="Zdjęcie" loading="lazy">
     <div id="press-hint" class="scramble">Press on Photo</div>
   </div>
 
@@ -297,7 +318,7 @@
   <div id="kontakt" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
-      <div id="realisuje-text" class="scramble"></div>
+      <div id="realisuje-text">Realizuję: <span id="realisuje-scramble" class="scramble"></span></div>
       <div class="kontakt-columns">
         <div class="kontakt-column">
           <p id="email-text" class="scramble"></p>
@@ -311,10 +332,12 @@
           </div>
         </div>
       </div>
-      <iframe class="kontakt-map"
-        src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d19548.238345632435!2d17.038538!3d51.107885!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470fc3e0f29f84c3%3A0x78c9b935b21b06ae!2sWroc%C5%82aw!5e0!3m2!1spl!2spl!4v1713140000000!5m2!1spl!2spl"
-        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-      </iframe>
+     <iframe class="kontakt-map"
+  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19548.238345632435!2d17.0295!3d51.1092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.5!3m3!1m2!1s0x470fc3e4c21f49ed%3A0x8f2072d4f37c1a44!2sRynek%2C%20Wroc%C5%82aw!5e0!3m2!1spl!2spl!4v1713161600000!5m2!1spl!2spl"
+  width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
+  referrerpolicy="no-referrer-when-downgrade">
+</iframe>
+
     </div>
   </div>
 
@@ -455,7 +478,7 @@ function closeOverlay() {
 }
 
 // Realizuję scramble loop
-const realisujeFx = new TextScramble(document.getElementById("realisuje-text"));
+const realisujeFx = new TextScramble(document.getElementById("realisuje-scramble"));
 const services = ["Foto", "Wideo", "Nagrania Dźwięku", "Montaż wideo"];
 let currentService = 0;
 function loopServices() {
