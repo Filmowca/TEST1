@@ -3,41 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preload" as="image" href="DSC_8911.JPG">
+  <link rel="preload" as="image" href="DSC_8983.JPG">
   <title>SGmedia.pl - Szymon Grzeszczak</title>
-  <link rel="preload" as="image" href="DSC_8901.JPG">
-  <link rel="preload" as="image" href="DSC_8902.JPG">
-  <link rel="preload" as="image" href="DSC_8903.JPG">
-  <link rel="preload" as="image" href="DSC_8904.JPG">
-  <link rel="preload" as="image" href="DSC_8905.JPG">
-  <link rel="preload" as="image" href="promo_video.mp4" as="video">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; }
     html, body {
-      background: #000;
+      margin: 0;
+      padding: 0;
+      background-color: #000;
       color: #fff;
       font-family: "Courier New", monospace;
+      overflow-x: hidden;
     }
-
     body {
       animation: fadeIn 2s ease;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; }
-      to { opacity: 1; }
+      to   { opacity: 1; }
     }
 
     header {
-      position: absolute;
-      top: 10px;
-      left: 20px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
       z-index: 1100;
+      position: relative;
     }
 
     .logo {
       font-size: 2rem;
       font-weight: bold;
-      font-family: sans-serif;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
     .logo-sub {
@@ -45,15 +45,14 @@
     }
 
     nav {
-      padding: 20px;
-      position: absolute;
-      top: 80px;
-      left: 20px;
+      padding: 10px 20px;
       z-index: 1100;
     }
 
     nav ul {
       list-style: none;
+      margin: 0;
+      padding: 0;
       display: flex;
       gap: 20px;
     }
@@ -61,92 +60,210 @@
     nav ul li a {
       color: #fff;
       text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: border 0.3s;
-    }
-
-    nav ul li a:hover {
-      border-bottom: 1px solid white;
-    }
-
-    #slider {
-      margin-top: 120px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: calc(100vh - 160px);
-      flex-direction: row;
       position: relative;
     }
 
-    #press-hint {
+    nav ul li a::after {
+      content: "";
       position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #fff;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(-100%);
+    }
+
+    nav ul li a:hover::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    #slider {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 800px;
+      height: calc(100vh - 80px);
+      background: #000;
+      cursor: pointer;
+      z-index: 100;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    #slider img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    #press-hint {
+      margin-top: 10px;
       font-size: 1rem;
+      color: #fff;
       opacity: 0.8;
       animation: fadeIn 3s ease-in-out infinite alternate;
-      white-space: nowrap;
-    }
-
-    #slideImage, #slideVideo {
-      max-height: 100%;
-      max-width: 90%;
-      object-fit: contain;
-      display: none;
-    }
-
-    #slideImage.active, #slideVideo.active {
-      display: block;
+      font-family: monospace;
     }
 
     #description {
       position: fixed;
       bottom: 0;
+      left: 0;
       width: 100%;
-      padding: 10px;
-      background: rgba(0,0,0,0.9);
+      height: 60px;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 10px 0;
+      font-size: 1.2rem;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      font-size: 1rem;
+      z-index: 110;
     }
 
     #description a {
-      color: white;
+      color: #fff;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-bottom 0.3s;
+    }
+
+    #description a:hover {
+      border-bottom: 1px solid #fff;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      z-index: 1200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .overlay.active { display: flex; }
+
+    .overlay-content {
+      background: #000;
+      padding: 20px;
+      max-width: 900px;
+      width: 90%;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+
+    #omnie-content {
+      display: flex;
+      flex-direction: row;
+      gap: 30px;
+      align-items: center;
+      justify-content: center;
+      text-align: left;
+    }
+
+    #omnie-content img {
+      max-width: 240px;
+      width: 100%;
+      border-radius: 20px;
+      object-fit: cover;
+    }
+
+    #omnie-text {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    #omnie-text strong {
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .kontakt-columns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .kontakt-column {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    #socials-text a {
+      color: #fff;
+      display: block;
+      margin: 5px 0;
       text-decoration: none;
       border-bottom: 1px solid transparent;
       transition: border-bottom 0.3s ease;
     }
 
-    #description a:hover {
-      border-bottom: 1px solid white;
+    #socials-text a:hover {
+      border-bottom: 1px solid #fff;
     }
 
-    @media screen and (max-width: 768px) {
-      nav ul {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+    .kontakt-map {
+      width: 100%;
+      height: 300px;
+      border: none;
+      filter: grayscale(100%);
+    }
 
-      #slider {
-        flex-direction: column;
-        margin-top: 180px;
-      }
+    #realisuje-text {
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      text-align: center;
+    }
 
-      #press-hint {
-        left: 20px;
-        top: auto;
-        bottom: 20px;
-        transform: none;
-      }
+    .scramble span.dud {
+      opacity: 0.3;
+    }
 
-      #description {
-        font-size: 0.9rem;
-        flex-direction: column;
-        gap: 5px;
-      }
+    #inactivity-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.5rem;
+    }
+
+    #inactivity-overlay.active {
+      display: flex;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+      100% { opacity: 0.4; }
     }
   </style>
 </head>
@@ -155,6 +272,7 @@
     <div class="logo">SG. Media.pl</div>
     <div class="logo-sub">Szymon Grzeszczak</div>
   </header>
+
   <nav>
     <ul>
       <li><a href="#" onclick="showOverlay('omnie')">O mnie</a></li>
@@ -163,193 +281,205 @@
     </ul>
   </nav>
 
-  <div id="slider" onclick="nextSlide()">
-    <div id="press-hint" class="scramble">Press on photo</div>
-    <img id="slideImage" class="active" src="" alt="Zdjęcie" loading="lazy">
-    <video id="slideVideo" muted autoplay loop playsinline></video>
+  <div id="slider">
+    <img id="slideImage" src="" alt="Zdjęcie" loading="lazy">
+    <div id="press-hint" class="scramble">Press on Photo</div>
   </div>
 
   <div id="description">
-    <div id="desc-real"></div>
-    <div id="desc-model"></div>
-    <div id="desc-aparat"></div>
+    <div id="desc-real" class="scramble"></div>
+    <div id="desc-model" class="scramble"></div>
+    <div id="desc-aparat" class="scramble"></div>
   </div>
-<script>
-  class TextScramble {
-    constructor(el) {
-      this.el = el;
-      this.chars = '!<>-_\\/[]{}—=+*^?#________';
-      this.update = this.update.bind(this);
-    }
 
-    setText(newText) {
-      const oldText = this.el.innerText;
-      const length = Math.max(oldText.length, newText.length);
-      const promise = new Promise(resolve => this.resolve = resolve);
-      this.queue = [];
-
-      for (let i = 0; i < length; i++) {
-        const from = oldText[i] || '';
-        const to = newText[i] || '';
-        const start = Math.floor(Math.random() * 40);
-        const end = start + Math.floor(Math.random() * 40);
-        this.queue.push({ from, to, start, end });
-      }
-
-      cancelAnimationFrame(this.frameRequest);
-      this.frame = 0;
-      this.update();
-      return promise;
-    }
-
-    update() {
-      let output = '';
-      let complete = 0;
-      for (let i = 0, n = this.queue.length; i < n; i++) {
-        let { from, to, start, end, char } = this.queue[i];
-        if (this.frame >= end) {
-          complete++;
-          output += to;
-        } else if (this.frame >= start) {
-          if (!char || Math.random() < 0.28) {
-            char = this.randomChar();
-            this.queue[i].char = char;
-          }
-          output += `<span class="dud">${char}</span>`;
-        } else {
-          output += from;
-        }
-      }
-      this.el.innerHTML = output;
-      if (complete === this.queue.length) {
-        this.resolve();
-      } else {
-        this.frameRequest = requestAnimationFrame(this.update);
-        this.frame++;
-      }
-    }
-
-    randomChar() {
-      return this.chars[Math.floor(Math.random() * this.chars.length)];
-    }
-  }
-
-  const slides = [
-    // 15 images
-    ...Array.from({ length: 15 }, (_, i) => ({
-      src: `DSC_89${(i + 1).toString().padStart(2, '0')}.JPG`,
-      modelName: `Model${i + 1}`,
-      modelInsta: `https://instagram.com/Model${i + 1}`,
-      realName: "Szymon_Grzeszczak_Photo",
-      realInsta: "https://instagram.com/Szymon_Grzeszczak_Photo",
-      aparat: "Aparat: Nikon D850"
-    })),
-    // 1 video
-    {
-      type: "video",
-      src: "promo_video.mp4",
-      modelName: "VideoModel",
-      modelInsta: "https://instagram.com/VideoModel",
-      realName: "Szymon_Grzeszczak_Photo",
-      realInsta: "https://instagram.com/Szymon_Grzeszczak_Photo",
-      aparat: "Ujęcia z: Sony A7 III"
-    }
-  ];
-
-  let currentSlide = 0;
-
-  const slideImg = document.getElementById("slideImage");
-  const slideVid = document.getElementById("slideVideo");
-
-  const realDiv = document.getElementById("desc-real");
-  const modelDiv = document.getElementById("desc-model");
-  const aparatDiv = document.getElementById("desc-aparat");
-
-  const scrambleReal = new TextScramble(realDiv);
-  const scrambleModel = new TextScramble(modelDiv);
-  const scrambleAparat = new TextScramble(aparatDiv);
-
-  function showSlide(index) {
-    const slide = slides[index];
-
-    // Reset
-    slideImg.classList.remove("active");
-    slideVid.classList.remove("active");
-    slideVid.pause();
-
-    if (slide.type === "video") {
-      slideVid.src = slide.src;
-      slideVid.classList.add("active");
-      slideVid.play();
-    } else {
-      slideImg.src = slide.src;
-      slideImg.classList.add("active");
-    }
-
-    // Link descriptions
-    realDiv.innerHTML = `<a href="${slide.realInsta}" target="_blank">Realizator: @${slide.realName}</a>`;
-    modelDiv.innerHTML = `<a href="${slide.modelInsta}" target="_blank">Model: @${slide.modelName}</a>`;
-    scrambleAparat.setText(slide.aparat);
-  }
-
-  function nextSlide() {
-    currentSlide = (currentSlide + 1) % slides.length;
-    showSlide(currentSlide);
-  }
-
-  showSlide(currentSlide);
-</script>
-  <!-- Overlay: O mnie -->
-  <div id="omnie" class="overlay" style="display:none;">
+  <div id="omnie" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
       <div id="omnie-content">
-        <img src="o_mnie.jpg" alt="O mnie" style="max-width:200px; border-radius:10px;">
-        <div style="margin-left: 20px;">
-          <strong>Szymon Grzeszczak</strong>
-          <p>Fotograf artystyczny – łączę technikę z emocjami. Tworzę obrazy, które mają duszę.</p>
+        <img src="o_mnie.jpg" alt="O mnie">
+        <div id="omnie-text">
+          <strong>Nazywam się Szymon Grzeszczak</strong>
+          <span>i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy. Moja pasja przekłada się na każdy projekt.</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Overlay: Kontakt -->
-  <div id="kontakt" class="overlay" style="display:none;">
+  <div id="kontakt" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
-      <div style="margin-bottom: 20px;">
-        <strong>Kontakt</strong>
-      </div>
-      <div style="display:flex; flex-direction:column; gap:10px;">
-        <div id="email-text">kontakt@sgmedia.pl</div>
-        <div id="socials-text">
-          <a href="https://www.instagram.com" target="_blank">Instagram</a>
-          <a href="https://www.facebook.com" target="_blank">Facebook</a>
-          <a href="https://www.youtube.com" target="_blank">YouTube</a>
-          <a href="https://www.tiktok.com" target="_blank">TikTok</a>
+      <div id="realisuje-text">Realizuję: <span id="realisuje-scramble" class="scramble"></span></div>
+      <div class="kontakt-columns">
+        <div class="kontakt-column">
+          <p id="email-text" class="scramble"></p>
+        </div>
+        <div class="kontakt-column">
+          <div id="socials-text">
+            <a class="scramble" href="https://www.instagram.com" target="_blank">Instagram</a>
+            <a class="scramble" href="https://www.facebook.com" target="_blank">Facebook</a>
+            <a class="scramble" href="https://www.youtube.com" target="_blank">YouTube</a>
+            <a class="scramble" href="https://www.tiktok.com" target="_blank">TikTok</a>
+          </div>
         </div>
       </div>
-      <div style="margin-top:20px;">
-        <iframe
-          class="kontakt-map"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19548.238345632435!2d17.0295!3d51.1092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.5!3m3!1m2!1s0x470fc3e4c21f49ed%3A0x8f2072d4f37c1a44!2sRynek%2C%20Wroc%C5%82aw!5e0!3m2!1spl!2spl!4v1713161600000!5m2!1spl!2spl"
-          width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-      </div>
+      <iframe class="kontakt-map"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19548.238345632435!2d17.0295!3d51.1092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.5!3m3!1m2!1s0x470fc3e4c21f49ed%3A0x8f2072d4f37c1a44!2sRynek%2C%20Wroc%C5%82aw!5e0!3m2!1spl!2spl!4v1713161600000!5m2!1spl!2spl"
+        width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
     </div>
   </div>
 
-  <script>
-    function showOverlay(id) {
-      document.getElementById(id).style.display = 'flex';
-    }
+  <div id="inactivity-overlay">
+    Wracam za moment... ✦ Brak aktywności ✦
+  </div>
 
-    function closeOverlay() {
-      document.getElementById('omnie').style.display = 'none';
-      document.getElementById('kontakt').style.display = 'none';
+<script>
+class TextScramble {
+  constructor(el) {
+    this.el = el;
+    this.chars = '!<>-_\\/[]{}—=+*^?#________';
+    this.update = this.update.bind(this);
+  }
+  setText(newText) {
+    const oldText = this.el.innerText;
+    const length = Math.max(oldText.length, newText.length);
+    const promise = new Promise(resolve => this.resolve = resolve);
+    this.queue = [];
+    for (let i = 0; i < length; i++) {
+      const from = oldText[i] || '';
+      const to = newText[i] || '';
+      const start = Math.floor(Math.random() * 40);
+      const end = start + Math.floor(Math.random() * 40);
+      this.queue.push({ from, to, start, end });
     }
-  </script>
+    cancelAnimationFrame(this.frameRequest);
+    this.frame = 0;
+    this.update();
+    return promise;
+  }
+  update() {
+    let output = '';
+    let complete = 0;
+    for (let i = 0, n = this.queue.length; i < n; i++) {
+      let { from, to, start, end, char } = this.queue[i];
+      if (this.frame >= end) {
+        complete++;
+        output += to;
+      } else if (this.frame >= start) {
+        if (!char || Math.random() < 0.28) {
+          char = this.randomChar();
+          this.queue[i].char = char;
+        }
+        output += `<span class="dud">${char}</span>`;
+      } else {
+        output += from;
+      }
+    }
+    this.el.innerHTML = output;
+    if (complete === this.queue.length) {
+      this.resolve();
+    } else {
+      this.frameRequest = requestAnimationFrame(this.update);
+      this.frame++;
+    }
+  }
+  randomChar() {
+    return this.chars[Math.floor(Math.random() * this.chars.length)];
+  }
+}
 
+const slides = [
+  {
+    src: "DSC_8911.JPG",
+    modelName: "Przyklad",
+    modelInsta: "https://instagram.com/Przyklad",
+    realName: "Szymon_Grzeszczak_Photo",
+    realInsta: "https://instagram.com/Szymon_Grzeszczak_Photo",
+    aparat: "Aparat: Nikon D300"
+  },
+  {
+    src: "DSC_8983.JPG",
+    modelName: "KarolinaModel",
+    modelInsta: "https://instagram.com/KarolinaModel",
+    realName: "Szymon_Grzeszczak_Photo",
+    realInsta: "https://instagram.com/Szymon_Grzeszczak_Photo",
+    aparat: "Aparat: Canon EOS 5D"
+  }
+];
+
+let currentSlide = 0;
+const realDiv = document.getElementById("desc-real");
+const modelDiv = document.getElementById("desc-model");
+const aparatDiv = document.getElementById("desc-aparat");
+const realFx = new TextScramble(realDiv);
+const modelFx = new TextScramble(modelDiv);
+const aparatFx = new TextScramble(aparatDiv);
+
+function showSlide(index) {
+  const slide = slides[index];
+  document.getElementById("slideImage").src = slide.src;
+  realFx.setText(`Realizator: @${slide.realName}`);
+  modelFx.setText(`Model: @${slide.modelName}`);
+  aparatFx.setText(slide.aparat);
+  realDiv.innerHTML = `<a href="${slide.realInsta}" target="_blank">Realizator: @${slide.realName}</a>`;
+  modelDiv.innerHTML = `<a href="${slide.modelInsta}" target="_blank">Model: @${slide.modelName}</a>`;
+}
+
+function nextSlide() {
+  currentSlide = (currentSlide + 1) % slides.length;
+  showSlide(currentSlide);
+}
+
+showSlide(currentSlide);
+document.getElementById("slider").addEventListener("click", nextSlide);
+
+function showOverlay(id) {
+  document.getElementById("slider").classList.add("hidden");
+  document.getElementById(id).classList.add("active");
+
+  if (id === 'omnie') {
+    new TextScramble(document.getElementById("omnie-text")).setText(
+      "Nazywam się Szymon Grzeszczak i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy."
+    );
+  }
+
+  if (id === 'kontakt') {
+    new TextScramble(document.getElementById("email-text")).setText("kontakt@lgmedia.pl");
+    document.querySelectorAll("#socials-text a").forEach(link => {
+      new TextScramble(link).setText(link.innerText);
+    });
+  }
+}
+
+function closeOverlay() {
+  document.getElementById("slider").classList.remove("hidden");
+  document.getElementById("omnie").classList.remove("active");
+  document.getElementById("kontakt").classList.remove("active");
+}
+
+// Realizuję loop
+const realisujeFx = new TextScramble(document.getElementById("realisuje-scramble"));
+const services = ["Foto", "Wideo", "Nagrania Dźwięku", "Montaż wideo"];
+let currentService = 0;
+function loopServices() {
+  realisujeFx.setText(services[currentService]);
+  currentService = (currentService + 1) % services.length;
+  setTimeout(loopServices, 3000);
+}
+loopServices();
+
+// Inactivity overlay
+let inactivityTimer = null;
+function resetInactivity() {
+  clearTimeout(inactivityTimer);
+  document.getElementById("inactivity-overlay").classList.remove("active");
+  inactivityTimer = setTimeout(() => {
+    document.getElementById("inactivity-overlay").classList.add("active");
+  }, 30000);
+}
+['mousemove', 'keydown', 'click'].forEach(e => document.addEventListener(e, resetInactivity));
+resetInactivity();
+</script>
 </body>
 </html>
