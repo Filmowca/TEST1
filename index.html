@@ -297,15 +297,66 @@ nav ul li a {
       50% { opacity: 0.8; }
       100% { opacity: 0.4; }
     }
+    .header-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px 10px;
+  text-align: center;
+}
+
+.header-centered .logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.header-centered .logo-sub {
+  font-size: 1.1rem;
+  color: #ccc;
+  margin-top: 4px;
+}
+
+.menu-centered ul {
+  list-style: none;
+  margin: 15px 0 0;
+  padding: 0;
+  display: flex;
+  gap: 20px;
+}
+
+.menu-centered ul li a {
+  color: #fff;
+  text-decoration: none;
+  position: relative;
+}
+
+.menu-centered ul li a::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #fff;
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.menu-centered ul li a:hover::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
   </style>
 </head>
 <body>
-  <header class="header-bar">
-  <div class="logo-group">
-    <div class="logo">SG.media.pl</div>
-    <div class="logo-sub">Szymon Grzeszczak</div>
-  </div>
-  <nav>
+<header class="header-centered">
+  <div class="logo">SG.media.pl</div>
+  <div class="logo-sub">Szymon Grzeszczak</div>
+  <nav class="menu-centered">
     <ul>
       <li><a href="#" onclick="showOverlay('omnie')">O mnie</a></li>
       <li><a href="#" onclick="showOverlay('kontakt')">Kontakt</a></li>
@@ -313,6 +364,8 @@ nav ul li a {
     </ul>
   </nav>
 </header>
+
+
 
 
   <div id="slider">
