@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="preload" as="image" href="DSC_8911.JPG">
-  <link rel="preload" as="image" href="DSC_8983.JPG">
-  <title>SGmedia.pl - Szymon Grzeszczak</title>
+  <title>SG.media.pl - Szymon Grzeszczak</title>
   <style>
     * { box-sizing: border-box; }
     html, body {
@@ -24,64 +22,35 @@
       to   { opacity: 1; }
     }
 
-    .header-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 40px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
+    .header-centered {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 30px 40px 0;
+    }
 
-.logo-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.logo {
-  font-size: 2rem;
-  font-weight: bold;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #fff;
-}
-
-.logo-sub {
-  font-size: 1.1rem;
-  color: #ccc;
-  margin-top: 4px;
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  padding: 0;
-  margin: 0;
-}
-
-nav ul li a {
-  color: #fff;
-  text-decoration: none;
-  position: relative;
-}
-
+    .header-centered .logo,
+    .header-centered .logo-sub {
+      text-align: left;
+      margin-left: 4px;
+    }
 
     .logo {
       font-size: 2rem;
       font-weight: bold;
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #fff;
+      margin-bottom: 2px;
     }
 
     .logo-sub {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
+      color: #ccc;
+      margin-bottom: 10px;
+      margin-left: 2px;
     }
 
-    nav {
-      padding: 10px 20px;
-      z-index: 1100;
-    }
-
-    nav ul {
+    .menu-centered ul {
       list-style: none;
       margin: 0;
       padding: 0;
@@ -89,13 +58,13 @@ nav ul li a {
       gap: 20px;
     }
 
-    nav ul li a {
+    .menu-centered ul li a {
       color: #fff;
       text-decoration: none;
       position: relative;
     }
 
-    nav ul li a::after {
+    .menu-centered ul li a::after {
       content: "";
       position: absolute;
       bottom: -2px;
@@ -104,11 +73,11 @@ nav ul li a {
       height: 2px;
       background: #fff;
       opacity: 0;
-      transition: opacity 0.3s ease, transform 0.3s ease;
       transform: translateX(-100%);
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
-    nav ul li a:hover::after {
+    .menu-centered ul li a:hover::after {
       opacity: 1;
       transform: translateX(0);
     }
@@ -129,9 +98,9 @@ nav ul li a {
       flex-direction: column;
     }
 
-    #slider img {
-      width: 100%;
-      height: auto;
+    #slider img, #slider video {
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
       display: block;
     }
@@ -170,7 +139,6 @@ nav ul li a {
     #description a:hover {
       border-bottom: 1px solid #fff;
     }
-
     .overlay {
       position: fixed;
       top: 0;
@@ -297,69 +265,10 @@ nav ul li a {
       50% { opacity: 0.8; }
       100% { opacity: 0.4; }
     }
-    .header-centered {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 30px 40px 0;
-}
-
-.header-centered .logo,
-.header-centered .logo-sub {
-  text-align: left;
-  margin-left: 4px;
-}
-
-.logo {
-  font-size: 2rem;
-  font-weight: bold;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #fff;
-  margin-bottom: 2px;
-}
-
-.logo-sub {
-  font-size: 1.1rem;
-  color: #ccc;
-  margin-bottom: 10px;
-  margin-left: 2px;
-}
-
-.menu-centered ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: 20px;
-}
-
-.menu-centered ul li a {
-  color: #fff;
-  text-decoration: none;
-  position: relative;
-}
-
-.menu-centered ul li a::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: #fff;
-  opacity: 0;
-  transform: translateX(-100%);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.menu-centered ul li a:hover::after {
-  opacity: 1;
-  transform: translateX(0);
-}
-
   </style>
 </head>
 <body>
+
 <header class="header-centered">
   <div class="logo">SG.media.pl</div>
   <div class="logo-sub">Szymon Grzeszczak</div>
@@ -372,61 +281,57 @@ nav ul li a {
   </nav>
 </header>
 
+<div id="slider">
+  <div id="slideImage"></div>
+  <div id="press-hint" class="scramble">Press on Photo</div>
+</div>
 
-
-
-  <div id="slider">
-    <img id="slideImage" src="" alt="Zdjęcie" loading="lazy">
-    <div id="press-hint" class="scramble">Press on Photo</div>
-  </div>
-
-  <div id="description">
-    <div id="desc-real" class="scramble"></div>
-    <div id="desc-model" class="scramble"></div>
-    <div id="desc-aparat" class="scramble"></div>
-  </div>
-
-  <div id="omnie" class="overlay">
-    <div class="overlay-content">
-      <span class="close" onclick="closeOverlay()">X</span>
-      <div id="omnie-content">
-        <img src="o_mnie.jpg" alt="O mnie">
-        <div id="omnie-text">
-          <strong>Nazywam się Szymon Grzeszczak</strong>
-          <span>i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy. Moja pasja przekłada się na każdy projekt.</span>
-        </div>
+<div id="description">
+  <div id="desc-real" class="scramble"></div>
+  <div id="desc-model" class="scramble"></div>
+  <div id="desc-aparat" class="scramble"></div>
+</div>
+<div id="omnie" class="overlay">
+  <div class="overlay-content">
+    <span class="close" onclick="closeOverlay()">X</span>
+    <div id="omnie-content">
+      <img src="o_mnie.jpg" alt="O mnie">
+      <div id="omnie-text">
+        <strong>Nazywam się Szymon Grzeszczak</strong>
+        <span>i zajmuję się fotografią artystyczną. Łączę technikę z emocjami, tworząc niebanalne obrazy. Moja pasja przekłada się na każdy projekt.</span>
       </div>
     </div>
   </div>
+</div>
 
-  <div id="kontakt" class="overlay">
-    <div class="overlay-content">
-      <span class="close" onclick="closeOverlay()">X</span>
-      <div id="realisuje-text">Realizuję: <span id="realisuje-scramble" class="scramble"></span></div>
-      <div class="kontakt-columns">
-        <div class="kontakt-column">
-          <p id="email-text" class="scramble"></p>
-        </div>
-        <div class="kontakt-column">
-          <div id="socials-text">
-            <a class="scramble" href="https://www.instagram.com" target="_blank">Instagram</a>
-            <a class="scramble" href="https://www.facebook.com" target="_blank">Facebook</a>
-            <a class="scramble" href="https://www.youtube.com" target="_blank">YouTube</a>
-            <a class="scramble" href="https://www.tiktok.com" target="_blank">TikTok</a>
-          </div>
+<div id="kontakt" class="overlay">
+  <div class="overlay-content">
+    <span class="close" onclick="closeOverlay()">X</span>
+    <div id="realisuje-text">Realizuję: <span id="realisuje-scramble" class="scramble"></span></div>
+    <div class="kontakt-columns">
+      <div class="kontakt-column">
+        <p id="email-text" class="scramble"></p>
+      </div>
+      <div class="kontakt-column">
+        <div id="socials-text">
+          <a class="scramble" href="https://www.instagram.com" target="_blank">Instagram</a>
+          <a class="scramble" href="https://www.facebook.com" target="_blank">Facebook</a>
+          <a class="scramble" href="https://www.youtube.com" target="_blank">YouTube</a>
+          <a class="scramble" href="https://www.tiktok.com" target="_blank">TikTok</a>
         </div>
       </div>
-      <iframe class="kontakt-map"
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19548.238345632435!2d17.0295!3d51.1092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.5!3m3!1m2!1s0x470fc3e4c21f49ed%3A0x8f2072d4f37c1a44!2sRynek%2C%20Wroc%C5%82aw!5e0!3m2!1spl!2spl!4v1713161600000!5m2!1spl!2spl"
-        width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade">
-      </iframe>
     </div>
+    <iframe class="kontakt-map"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19548.238345632435!2d17.0295!3d51.1092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.5!3m3!1m2!1s0x470fc3e4c21f49ed%3A0x8f2072d4f37c1a44!2sRynek%2C%20Wroc%C5%82aw!5e0!3m2!1spl!2spl!4v1713161600000!5m2!1spl!2spl"
+      width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
   </div>
+</div>
 
-  <div id="inactivity-overlay">
-    Wracam za moment... ✦ Brak aktywności ✦
-  </div>
+<div id="inactivity-overlay">
+  Wracam za moment... ✦ Brak aktywności ✦
+</div>
 
 <script>
 class TextScramble {
@@ -485,6 +390,7 @@ class TextScramble {
 
 const slides = [
   {
+    type: "image",
     src: "DSC_8911.JPG",
     modelName: "Przyklad",
     modelInsta: "https://instagram.com/Przyklad",
@@ -493,13 +399,42 @@ const slides = [
     aparat: "Aparat: Nikon D300"
   },
   {
+    type: "image",
     src: "DSC_8983.JPG",
     modelName: "KarolinaModel",
     modelInsta: "https://instagram.com/KarolinaModel",
     realName: "Szymon_Grzeszczak_Photo",
     realInsta: "https://instagram.com/Szymon_Grzeszczak_Photo",
     aparat: "Aparat: Canon EOS 5D"
-  }
+  },
+  {
+    type: "video",
+    src: "vid_horizontal.mp4",
+    modelName: "VideoModel1",
+    modelInsta: "https://instagram.com/VideoModel1",
+    realName: "SG_Media",
+    realInsta: "https://instagram.com/SG_Media",
+    aparat: "Sony A7 III"
+  },
+  {
+    type: "video",
+    src: "vid_vertical.mp4",
+    modelName: "VerticalStar",
+    modelInsta: "https://instagram.com/VerticalStar",
+    realName: "SzymonG",
+    realInsta: "https://instagram.com/SzymonG",
+    aparat: "iPhone 15 Pro"
+  },
+  // Dodajemy 18 kolejnych slajdów
+  ...Array.from({ length: 18 }, (_, i) => ({
+    type: "image",
+    src: `galeria${i + 1}.jpg`,
+    modelName: `Model${i + 1}`,
+    modelInsta: `https://instagram.com/Model${i + 1}`,
+    realName: "SG_Photo",
+    realInsta: "https://instagram.com/SG_Photo",
+    aparat: `Canon R${i + 1}`
+  }))
 ];
 
 let currentSlide = 0;
@@ -512,12 +447,31 @@ const aparatFx = new TextScramble(aparatDiv);
 
 function showSlide(index) {
   const slide = slides[index];
-  document.getElementById("slideImage").src = slide.src;
+  const mediaContainer = document.getElementById("slideImage");
+  const parent = mediaContainer.parentElement;
+
+  // Wyczyść poprzedni element
+  mediaContainer.innerHTML = "";
 
   aparatFx.setText(slide.aparat);
-
   realDiv.innerHTML = `<a href="${slide.realInsta}" target="_blank" style="color: #fff; text-decoration: none;">Realizator: @${slide.realName}</a>`;
   modelDiv.innerHTML = `<a href="${slide.modelInsta}" target="_blank" style="color: #fff; text-decoration: none;">Model: @${slide.modelName}</a>`;
+
+  if (slide.type === "image") {
+    const img = document.createElement("img");
+    img.src = slide.src;
+    img.alt = "Zdjęcie";
+    img.loading = "lazy";
+    mediaContainer.appendChild(img);
+  } else if (slide.type === "video") {
+    const video = document.createElement("video");
+    video.src = slide.src;
+    video.autoplay = true;
+    video.loop = true;
+    video.muted = true;
+    video.playsInline = true;
+    mediaContainer.appendChild(video);
+  }
 }
 
 function nextSlide() {
@@ -552,7 +506,7 @@ function closeOverlay() {
   document.getElementById("kontakt").classList.remove("active");
 }
 
-// Realizuję loop
+// Pętla usług
 const realisujeFx = new TextScramble(document.getElementById("realisuje-scramble"));
 const services = ["Foto", "Wideo", "Nagrania Dźwięku", "Montaż wideo"];
 let currentService = 0;
@@ -563,7 +517,7 @@ function loopServices() {
 }
 loopServices();
 
-// Inactivity overlay
+// Overlay nieaktywności
 let inactivityTimer = null;
 function resetInactivity() {
   clearTimeout(inactivityTimer);
