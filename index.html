@@ -300,10 +300,11 @@ nav ul li a {
     .header-centered {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 30px 20px 10px;
-  text-align: center;
+  align-items: flex-start;
+  padding: 30px 40px 10px;
+  text-align: left;
 }
+
 
 .header-centered .logo {
   font-size: 2rem;
@@ -506,12 +507,11 @@ const aparatFx = new TextScramble(aparatDiv);
 function showSlide(index) {
   const slide = slides[index];
   document.getElementById("slideImage").src = slide.src;
-realFx.setText("");
-modelFx.setText("");
-aparatFx.setText(slide.aparat);
 
-realDiv.innerHTML = `<a href="${slide.realInsta}" target="_blank" style="color: #fff; text-decoration: none;">Realizator: @${slide.realName}</a>`;
-modelDiv.innerHTML = `<a href="${slide.modelInsta}" target="_blank" style="color: #fff; text-decoration: none;">Model: @${slide.modelName}</a>`;
+  aparatFx.setText(slide.aparat);
+
+  realDiv.innerHTML = `<a href="${slide.realInsta}" target="_blank" style="color: #fff; text-decoration: none;">Realizator: @${slide.realName}</a>`;
+  modelDiv.innerHTML = `<a href="${slide.modelInsta}" target="_blank" style="color: #fff; text-decoration: none;">Model: @${slide.modelName}</a>`;
 }
 
 function nextSlide() {
