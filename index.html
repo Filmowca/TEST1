@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preload" as="image" href="DSC_8911.JPG">
-<link rel="preload" as="image" href="DSC_8983.JPG">
-
+  <link rel="preload" as="image" href="DSC_8983.JPG">
   <title>SGmedia.pl - Szymon Grzeszczak</title>
   <style>
     * { box-sizing: border-box; }
@@ -210,6 +209,19 @@
       min-width: 200px;
     }
 
+    #socials-text a {
+      color: #fff;
+      display: block;
+      margin: 5px 0;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-bottom 0.3s ease;
+    }
+
+    #socials-text a:hover {
+      border-bottom: 1px solid #fff;
+    }
+
     .kontakt-map {
       width: 100%;
       height: 300px;
@@ -227,7 +239,6 @@
       opacity: 0.3;
     }
 
-    /* Inactivity Blur Overlay */
     #inactivity-overlay {
       position: fixed;
       top: 0;
@@ -254,31 +265,12 @@
       50% { opacity: 0.8; }
       100% { opacity: 0.4; }
     }
-    body.light-mode {
-  background: #fff;
-  color: #000;
-}
-body.light-mode a {
-  color: #000;
-}
-body.light-mode #description {
-  background: rgba(255, 255, 255, 0.9);
-}
-body.light-mode .kontakt-map {
-  filter: grayscale(0%);
-}
-
-
   </style>
 </head>
 <body>
   <header>
     <div class="logo">SG. Media.pl</div>
     <div class="logo-sub">Szymon Grzeszczak</div>
-    <button id="toggle-theme" style="margin-top:10px;padding:5px 10px;font-family:monospace;background:#fff;color:#000;border:none;cursor:pointer;border-radius:4px;">
-  Switch Theme
-</button>
-
   </header>
 
   <nav>
@@ -290,7 +282,7 @@ body.light-mode .kontakt-map {
   </nav>
 
   <div id="slider">
-   <img id="slideImage" src="" alt="Zdjęcie" loading="lazy">
+    <img id="slideImage" src="" alt="Zdjęcie" loading="lazy">
     <div id="press-hint" class="scramble">Press on Photo</div>
   </div>
 
@@ -300,7 +292,6 @@ body.light-mode .kontakt-map {
     <div id="desc-aparat" class="scramble"></div>
   </div>
 
-  <!-- Overlay: O mnie -->
   <div id="omnie" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
@@ -314,7 +305,6 @@ body.light-mode .kontakt-map {
     </div>
   </div>
 
-  <!-- Overlay: Kontakt -->
   <div id="kontakt" class="overlay">
     <div class="overlay-content">
       <span class="close" onclick="closeOverlay()">X</span>
@@ -332,12 +322,11 @@ body.light-mode .kontakt-map {
           </div>
         </div>
       </div>
-     <iframe class="kontakt-map"
-  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19548.238345632435!2d17.0295!3d51.1092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.5!3m3!1m2!1s0x470fc3e4c21f49ed%3A0x8f2072d4f37c1a44!2sRynek%2C%20Wroc%C5%82aw!5e0!3m2!1spl!2spl!4v1713161600000!5m2!1spl!2spl"
-  width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
-  referrerpolicy="no-referrer-when-downgrade">
-</iframe>
-
+      <iframe class="kontakt-map"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19548.238345632435!2d17.0295!3d51.1092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.5!3m3!1m2!1s0x470fc3e4c21f49ed%3A0x8f2072d4f37c1a44!2sRynek%2C%20Wroc%C5%82aw!5e0!3m2!1spl!2spl!4v1713161600000!5m2!1spl!2spl"
+        width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
     </div>
   </div>
 
@@ -345,18 +334,11 @@ body.light-mode .kontakt-map {
     Wracam za moment... ✦ Brak aktywności ✦
   </div>
 
-  <!-- Scripts -->
-  <script>
-    // Place all updated JS including scramble/slide/link effect here...
-    // [CODE CONTINUES: Type C to continue...]
-  </script>
-</body>
-</html>
 <script>
 class TextScramble {
   constructor(el) {
     this.el = el;
-    this.chars = '!<>-_\/[]{}—=+*^?#________';
+    this.chars = '!<>-_\\/[]{}—=+*^?#________';
     this.update = this.update.bind(this);
   }
   setText(newText) {
@@ -450,7 +432,6 @@ function nextSlide() {
 }
 
 showSlide(currentSlide);
-
 document.getElementById("slider").addEventListener("click", nextSlide);
 
 function showOverlay(id) {
@@ -477,18 +458,18 @@ function closeOverlay() {
   document.getElementById("kontakt").classList.remove("active");
 }
 
-// Realizuję scramble loop
+// Realizuję loop
 const realisujeFx = new TextScramble(document.getElementById("realisuje-scramble"));
 const services = ["Foto", "Wideo", "Nagrania Dźwięku", "Montaż wideo"];
 let currentService = 0;
 function loopServices() {
-  realisujeFx.setText(`Realizuję: ${services[currentService]}`);
+  realisujeFx.setText(services[currentService]);
   currentService = (currentService + 1) % services.length;
   setTimeout(loopServices, 3000);
 }
 loopServices();
 
-// Inactivity effect handler
+// Inactivity overlay
 let inactivityTimer = null;
 function resetInactivity() {
   clearTimeout(inactivityTimer);
@@ -497,9 +478,8 @@ function resetInactivity() {
     document.getElementById("inactivity-overlay").classList.add("active");
   }, 30000);
 }
-
-['mousemove', 'keydown', 'click'].forEach(event => {
-  document.addEventListener(event, resetInactivity);
-});
+['mousemove', 'keydown', 'click'].forEach(e => document.addEventListener(e, resetInactivity));
 resetInactivity();
 </script>
+</body>
+</html>
