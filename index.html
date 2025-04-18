@@ -419,13 +419,12 @@ const aparatFx = new TextScramble(aparatDiv);
 function showSlide(index) {
   const slide = slides[index];
   document.getElementById("slideImage").src = slide.src;
- realFx.setText("");
-modelFx.setText("");
-aparatFx.setText(slide.aparat);
-
-realDiv.innerHTML = `<a href="${slide.realInsta}" target="_blank" style="color: #fff; text-decoration: none;">Realizator: @${slide.realName}</a>`;
-modelDiv.innerHTML = `<a href="${slide.modelInsta}" target="_blank" style="color: #fff; text-decoration: none;">Model: @${slide.modelName}</a>`;
-
+  realFx.setText(`Realizator: @${slide.realName}`);
+  modelFx.setText(`Model: @${slide.modelName}`);
+  aparatFx.setText(slide.aparat);
+  realDiv.innerHTML = `<a href="${slide.realInsta}" target="_blank">Realizator: @${slide.realName}</a>`;
+  modelDiv.innerHTML = `<a href="${slide.modelInsta}" target="_blank">Model: @${slide.modelName}</a>`;
+}
 
 function nextSlide() {
   currentSlide = (currentSlide + 1) % slides.length;
